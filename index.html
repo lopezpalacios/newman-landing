@@ -34,6 +34,11 @@
   .calc .btn{width:100%;justify-content:center;font-size:16px;margin-top:var(--s-8)}
   .calc .nolock{display:flex;align-items:center;gap:6px;font-size:12px;color:#0d6347;margin-top:var(--s-12);font-family:var(--display);letter-spacing:.03em}
   .calc .nolock::before{content:"✓";font-weight:700}
+  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-12)}
+  @media(max-width:480px){.cgrid{grid-template-columns:1fr}}
+  .afinar-btn{background:none;border:0;color:var(--accent);font-family:var(--display);font-weight:var(--w-med);font-size:13px;cursor:pointer;padding:4px 0;margin-bottom:var(--s-8)}
+  #afinar{border-top:1px dashed var(--line);padding-top:var(--s-12);margin-bottom:var(--s-8)}
+  .result .math{font-size:12.5px}
 
   .result{margin-top:var(--s-24);border-top:1px solid var(--line);padding-top:var(--s-24)}
   .result .big{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-16)}
@@ -120,15 +125,23 @@
       <!-- the calculator IS the hero -->
       <div class="calc" id="calc">
         <h3>Calcule su ahorro</h3>
-        <p class="hint">Ingrese su gasto mensual de CFE. Le damos el número al instante — sin pedir sus datos primero.</p>
+        <p class="hint">Su gasto mensual de CFE basta para empezar. Afine con su división y giro para más precisión — sin pedir sus datos primero.</p>
         <div class="field">
           <label for="spend">Gasto mensual CFE (MXN)</label>
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
           <div class="msg">Ingrese un monto válido (mínimo $1,000).</div>
         </div>
-        <div class="field">
-          <label for="tariff">Su tarifa CFE</label>
-          <select id="tariff"></select>
+        <div class="cgrid">
+          <div class="field"><label for="tariff">Tarifa CFE</label><select id="tariff"></select></div>
+          <div class="field"><label for="division">División CFE</label><select id="division"></select></div>
+        </div>
+        <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (giro, turnos, demanda)</button>
+        <div id="afinar" hidden>
+          <div class="field"><label for="giro">Giro / industria</label><select id="giro"></select></div>
+          <div class="cgrid">
+            <div class="field"><label for="turno">Horario / turnos</label><select id="turno"></select></div>
+            <div class="field"><label for="demanda">Demanda contratada (kW)</label><input id="demanda" inputmode="numeric" autocomplete="off" placeholder="opcional, ej. 500"></div>
+          </div>
         </div>
         <button class="btn" id="calc-run" type="button">Mostrar mi ahorro →</button>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
