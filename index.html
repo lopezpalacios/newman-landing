@@ -8,25 +8,27 @@
 <meta property="og:title" content="¿Cuánto pagas de más a CFE? Velo en 30 segundos">
 <meta property="og:description" content="Calculadora de ahorro con tarifas CFE reales. Sin registro para ver tu número. Energía renovable sin inversión inicial.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="og-image.jpg">
+<meta property="og:image" content="https://lopezpalacios.github.io/newman-landing/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://lopezpalacios.github.io/newman-landing/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="newman.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"Newman Energy — Ahorro de energía C&I","areaServed":"MX","provider":{"@type":"Organization","name":"Newman Energy"},"description":"Energía renovable sin inversión inicial para industria y comercio en México: PPA solar, almacenamiento BESS e inteligencia de tarifas CFE."}
 </script>
 <style>
   /* ---- landing-specific ---- */
-  .wa-float{position:fixed;right:18px;bottom:18px;z-index:120;display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;
-    font-family:var(--display);font-weight:var(--w-med);font-size:14px;text-decoration:none;padding:13px 18px;border-radius:var(--r-pill);box-shadow:0 8px 28px rgba(37,211,102,.4)}
+  .wa-float{position:fixed;right:18px;bottom:18px;z-index:120;display:inline-flex;align-items:center;gap:10px;background:#128C7E;color:#fff;
+    font-family:var(--display);font-weight:var(--w-med);font-size:14px;text-decoration:none;padding:13px 18px;border-radius:var(--r-pill);box-shadow:0 8px 28px rgba(18,140,126,.4)}
   .wa-float svg{width:22px;height:22px;fill:#fff}
   .wa-float .t{display:inline}
   @media(max-width:560px){.wa-float .t{display:none}.wa-float{padding:14px;right:14px;bottom:14px}}
 
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s-48);align-items:center}
-  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:var(--s-36)}}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:var(--s-24)}.hero-grid .calc{order:-1}.hero .wrap{padding-block:24px 40px}}
+  body{padding-bottom:84px}
   .calc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:clamp(20px,4vw,32px);box-shadow:var(--shadow)}
   .calc h3{font-size:var(--text-subheading);font-weight:var(--w-med);margin-bottom:var(--s-8)}
   .calc .hint{font-size:13px;color:var(--muted);margin-bottom:var(--s-16)}
@@ -36,7 +38,7 @@
   .calc .nolock::before{content:"✓";font-weight:700}
   .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-12)}
   @media(max-width:480px){.cgrid{grid-template-columns:1fr}}
-  .afinar-btn{background:none;border:0;color:var(--accent);font-family:var(--display);font-weight:var(--w-med);font-size:13px;cursor:pointer;padding:4px 0;margin-bottom:var(--s-8)}
+  .afinar-btn{background:none;border:0;color:var(--accent);font-family:var(--display);font-weight:var(--w-med);font-size:14px;cursor:pointer;padding:12px 0;margin-bottom:var(--s-4);min-height:44px;text-align:left}
   #afinar{border-top:1px dashed var(--line);padding-top:var(--s-12);margin-bottom:var(--s-8)}
   .result .math{font-size:12.5px}
 
@@ -51,7 +53,7 @@
   @media(max-width:560px){.capture .row{grid-template-columns:1fr}}
   .capture .legal{font-size:11px;color:var(--muted);margin-top:var(--s-8)}
   .capture .legal a{color:var(--accent)}
-  .wa-inline{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-family:var(--display);font-weight:var(--w-med);
+  .wa-inline{display:inline-flex;align-items:center;gap:8px;background:#128C7E;color:#fff;font-family:var(--display);font-weight:var(--w-med);
     font-size:14px;text-decoration:none;padding:12px 18px;border-radius:var(--r-pill);margin-top:var(--s-12)}
   .wa-inline svg{width:18px;height:18px;fill:#fff}
 
@@ -69,6 +71,7 @@
   .badges .b{font-family:var(--display);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 12px}
   .persona{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-24);margin-top:var(--s-36)}
   @media(max-width:760px){.persona{grid-template-columns:1fr}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0}
 </style>
 </head>
 <body>
@@ -98,7 +101,7 @@
       <a href="#como">Cómo funciona</a>
       <a href="#casos">Casos</a>
       <a href="#transparencia">Transparencia</a>
-      <a href="#calc" class="btn">Calcula tu ahorro</a>
+      <a href="#calc" class="btn">Ver mi ahorro</a>
     </div>
     <button class="burger" aria-label="Menú" aria-expanded="false">☰</button>
   </div>
@@ -114,7 +117,7 @@
       <div>
         <p class="kicker">Industria y comercio · México</p>
         <h1>Sabemos cuánto paga de más a CFE.<br><b>Véalo en 30 segundos.</b></h1>
-        <p class="lead">Sin registro para ver su número. Usamos las tarifas reales de CFE y le mostramos la matemática — no un porcentaje inflado. Energía renovable <strong>sin inversión inicial</strong>.</p>
+        <p class="lead"><strong style="color:var(--text)">Empresas como la suya ahorran 18–30%.</strong> Sin registro para ver su número — usamos las tarifas reales de CFE y le mostramos la cuenta, no un porcentaje inflado. Energía renovable <strong>sin inversión inicial</strong>; ideal para nearshoring en el Bajío y el norte.</p>
         <div class="badges">
           <span class="b">Tarifas CFE reales · jun 2026</span>
           <span class="b">Sin inversión inicial (PPA)</span>
@@ -131,22 +134,22 @@
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
           <div class="msg">Ingrese un monto válido (mínimo $1,000).</div>
         </div>
-        <div class="cgrid">
-          <div class="field"><label for="tariff">Tarifa CFE</label><select id="tariff"></select></div>
-          <div class="field"><label for="division">División CFE</label><select id="division"></select></div>
-        </div>
-        <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (giro, turnos, demanda)</button>
+        <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (tarifa, división, giro, turnos, demanda)</button>
         <div id="afinar" hidden>
+          <div class="cgrid">
+            <div class="field"><label for="tariff">Tarifa CFE</label><select id="tariff"></select></div>
+            <div class="field"><label for="division">División CFE</label><select id="division"></select></div>
+          </div>
           <div class="field"><label for="giro">Giro / industria</label><select id="giro"></select></div>
           <div class="cgrid">
             <div class="field"><label for="turno">Horario / turnos</label><select id="turno"></select></div>
             <div class="field"><label for="demanda">Demanda contratada (kW)</label><input id="demanda" inputmode="numeric" autocomplete="off" placeholder="opcional, ej. 500"></div>
           </div>
         </div>
-        <button class="btn" id="calc-run" type="button">Mostrar mi ahorro →</button>
+        <button class="btn" id="calc-run" type="button">Ver mi ahorro →</button>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
 
-        <div class="result" id="calc-result" hidden aria-live="polite">
+        <div class="result" id="calc-result" hidden>
           <div class="big">
             <div class="cell"><div class="n" id="r-month">$0</div><small>Ahorro estimado / mes</small></div>
             <div class="cell"><div class="n" id="r-pct">0%</div><small>De su recibo actual</small></div>
@@ -154,19 +157,22 @@
             <div class="cell"><div class="n" id="r-ten">$0</div><small>Acumulado a 10 años</small></div>
           </div>
           <p class="math" id="r-math"></p>
+          <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
           <a class="wa-inline" id="wa-result" href="#" onclick="window.gtag&&gtag('event','whatsapp_click',{src:'result'})">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
             Enviar mi número por WhatsApp
           </a>
-          <form class="capture" data-validate onsubmit="event.preventDefault();window.gtag&&gtag('event','lead_captured');this.innerHTML='<p style=&quot;color:#0d6347;font-family:var(--display)&quot;>✓ Gracias. Le enviamos su desglose a 10 años en breve.</p>';">
-            <p class="muted" style="margin-bottom:var(--s-8)"><strong style="color:var(--text)">¿A dónde le enviamos su desglose completo a 10 años?</strong></p>
+          <p style="margin-top:var(--s-12)"><a href="#" id="email-toggle" style="color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med)">Prefiero que me lo envíen por correo →</a></p>
+          <form class="capture" id="capture" data-validate hidden>
+            <p class="muted" style="margin-bottom:var(--s-8)"><strong style="color:var(--text)">¿A dónde le enviamos su desglose a 10 años?</strong></p>
             <div class="row">
               <div class="field"><label for="c-name">Nombre</label><input id="c-name" required></div>
               <div class="field"><label for="c-emp">Empresa</label><input id="c-emp" required></div>
             </div>
-            <div class="field"><label for="c-wa">WhatsApp</label><input id="c-wa" inputmode="tel" required></div>
+            <div class="field"><label for="c-contact">WhatsApp o correo</label><input id="c-contact" required></div>
             <button class="btn" type="submit">Enviarme el desglose</button>
-            <p class="legal">Al enviar acepta nuestro <a href="#aviso">Aviso de Privacidad</a>. No compartimos sus datos. Sin spam.</p>
+            <p class="legal">Al enviar acepta nuestro <a href="aviso-privacidad.html">Aviso de Privacidad</a>. No compartimos sus datos. Sin spam.</p>
+            <p id="capture-ok" role="status" aria-live="polite" class="sr-only"></p>
           </form>
         </div>
       </div>
@@ -196,14 +202,14 @@
     <div class="section-rule"></div>
     <p class="lead" style="max-width:60ch">No prometemos "hasta 98%". Modelamos su caso con su tarifa real y le mostramos cómo. Esa es la diferencia.</p>
     <div class="tband">
-      <div class="case" data-reveal><div class="big">22%</div><p class="muted" style="margin-top:8px">Planta manufacturera, Querétaro · tarifa GDMTH · payback 3.8 años. <em>(caso ilustrativo)</em></p></div>
-      <div class="case" data-reveal><div class="big">$2.3 M</div><p class="muted" style="margin-top:8px">MXN de ahorro acumulado a 10 años · hotel, Riviera Maya · solar + BESS. <em>(caso ilustrativo)</em></p></div>
+      <div class="case" data-reveal><div class="big">18–30%</div><p class="muted" style="margin-top:8px">Ahorro típico modelado sobre tarifa GDMTH con tarifas CFE reales — el rango honesto, no "hasta 98%".</p></div>
+      <div class="case" data-reveal><div class="big">3–5 años</div><p class="muted" style="margin-top:8px">Payback característico de solar + almacenamiento para industria en México.</p></div>
       <div class="case" data-reveal><div class="big">$0</div><p class="muted" style="margin-top:8px">Inversión inicial del cliente — modelo PPA / BESS como servicio. Ahorro desde el primer mes.</p></div>
     </div>
     <div class="logos" aria-label="Referencias regulatorias y de calidad">
       <span>CRE</span><span>NOM-001-SEDE</span><span>ASOLMEX</span><span>Equipo Tier-1</span><span>Datos CFE · CENACE · DOF</span>
     </div>
-    <p class="muted" style="margin-top:var(--s-16);font-size:13px">Casos marcados ilustrativos hasta publicar resultados verificados. Las cifras de tarifa provienen del almacén de datos de Newman (CFE/CENACE, jun 2026).</p>
+    <p class="muted" style="margin-top:var(--s-16);font-size:13px">Rangos modelados con tarifas CFE reales (almacén Newman · CFE/CENACE, jun 2026); su número exacto se valida con un estudio de carga. Publicaremos casos verificados conforme cerremos proyectos.</p>
   </div>
 </section>
 
@@ -254,7 +260,7 @@
     <div class="section-rule"></div>
     <p class="lead" style="margin-inline:auto">No tiene que registrarse para saber cuánto ahorra. Empiece por su gasto mensual — o escríbanos por WhatsApp.</p>
     <div style="display:flex;gap:var(--s-16);justify-content:center;flex-wrap:wrap;margin-top:var(--s-24)">
-      <a href="#calc" class="btn">Calcular mi ahorro</a>
+      <a href="#calc" class="btn">Ver mi ahorro</a>
       <a class="wa-inline" style="margin-top:0" href="https://wa.me/525500000000?text=Hola%2C%20quiero%20cotizar%20mi%20ahorro%20de%20CFE." onclick="window.gtag&&gtag('event','whatsapp_click',{src:'final'})">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
         WhatsApp
@@ -292,6 +298,6 @@
   </div>
 </footer>
 
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>

@@ -101,6 +101,7 @@
       `Ahorro conservador <strong>${Math.round(r.pct)}%</strong>. Modelamos 18–30% a propósito; se valida con un estudio de carga antes de firmar.`;
     const wa=$('wa-result');
     if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, tarifa ${t}, división ${div}, giro ${r.giro.l}. Estimado de ahorro: ${fmt(r.monthly)}/mes. Quiero mi desglose a 10 años.`);
+    const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(r.monthly)} al mes (${Math.round(r.pct)}% de su recibo), ${fmt(r.annual)} al año. Tarifa ${t}, división ${div}.`;
     $('calc-result').hidden=false;
     $('calc-result').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
     if(window.gtag) gtag('event','result_shown',{spend,tariff:t,division:div,giro,pct:Math.round(r.pct)});
@@ -121,7 +122,24 @@
     document.getElementById('calc-run')?.addEventListener('click', runCalc);
     document.getElementById('spend')?.addEventListener('keydown', e=>{ if(e.key==='Enter') runCalc(); });
     const af=document.getElementById('afinar-toggle');
-    af?.addEventListener('click',()=>{const p=document.getElementById('afinar');const open=p.hidden;p.hidden=!open;af.setAttribute('aria-expanded',String(open));af.textContent=open?'− Menos detalle':'+ Afinar mi estimado (división, giro, turnos, demanda)';});
+    af?.addEventListener('click',()=>{const p=document.getElementById('afinar');const open=p.hidden;p.hidden=!open;af.setAttribute('aria-expanded',String(open));af.textContent=open?'− Menos detalle':'+ Afinar mi estimado (tarifa, división, giro, turnos, demanda)';});
+    // repopulate division when tariff changes (guards null rates)
+    const tEl=document.getElementById('tariff');
+    tEl?.addEventListener('change',()=>{const cur=document.getElementById('division').value;const el=document.getElementById('division');el.innerHTML='';Object.keys(TARIFFS[tEl.value]||TARIFFS.GDMTH).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;if(d===cur)o.selected=true;el.append(o);});});
+    // email capture toggle
+    document.getElementById('email-toggle')?.addEventListener('click',e=>{e.preventDefault();const c=document.getElementById('capture');c.hidden=false;e.target.style.display='none';c.querySelector('input')?.focus();});
+    // form submit -> mailto fallback (works with no backend) + announce
+    document.getElementById('capture')?.addEventListener('submit',e=>{
+      e.preventDefault();
+      const name=(document.getElementById('c-name').value||'').trim();
+      const emp=(document.getElementById('c-emp').value||'').trim();
+      const con=(document.getElementById('c-contact').value||'').trim();
+      if(!name||!emp||!con){[['c-name',name],['c-emp',emp],['c-contact',con]].forEach(([id,v])=>document.getElementById(id).closest('.field').classList.toggle('error',!v));return;}
+      if(window.gtag) gtag('event','lead_captured');
+      const body=encodeURIComponent(`Nombre: ${name}\nEmpresa: ${emp}\nContacto: ${con}\nGasto CFE: ${document.getElementById('spend').value}\nTarifa: ${document.getElementById('tariff').value} / División: ${document.getElementById('division').value}`);
+      window.location.href=`mailto:hola@newman.re?subject=${encodeURIComponent('Solicitud de desglose de ahorro')}&body=${body}`;
+      e.target.innerHTML='<p style="color:#0d6347;font-family:var(--display)" role="status">✓ Gracias, '+name+'. Le enviamos su desglose a 10 años en breve.</p>';
+    });
   });
   window.NewmanCalc = { compute, rates, TARIFFS, GIRO };
 })();
