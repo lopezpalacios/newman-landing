@@ -41,6 +41,8 @@
   .afinar-btn{background:none;border:0;color:var(--accent);font-family:var(--display);font-weight:var(--w-med);font-size:14px;cursor:pointer;padding:12px 0;margin-bottom:var(--s-4);min-height:44px;text-align:left}
   #afinar{border-top:1px dashed var(--line);padding-top:var(--s-12);margin-bottom:var(--s-8)}
   .result .math{font-size:12.5px}
+  .upload-wa{display:block;margin-top:var(--s-12);font-family:var(--display);font-size:13px;color:var(--accent);text-decoration:none;border:1px dashed var(--accent);border-radius:var(--r-sm);padding:10px 12px;text-align:center}
+  .upload-wa:hover{background:var(--accent-tint)}
 
   .result{margin-top:var(--s-24);border-top:1px solid var(--line);padding-top:var(--s-24)}
   .result .big{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-16)}
@@ -129,6 +131,7 @@
       <div class="calc" id="calc">
         <h3>Calcule su ahorro</h3>
         <p class="hint">Su gasto mensual de CFE basta para empezar. Afine con su división y giro para más precisión — sin pedir sus datos primero.</p>
+        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$62,000/mes (25%)</strong>. Calcule el suyo ↓</p>
         <div class="field">
           <label for="spend">Gasto mensual CFE (MXN)</label>
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
@@ -148,6 +151,7 @@
         </div>
         <button class="btn" id="calc-run" type="button">Ver mi ahorro →</button>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
+        <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'calc'})">📎 ¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
 
         <div class="result" id="calc-result" hidden>
           <div class="big">
