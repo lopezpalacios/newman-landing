@@ -162,12 +162,14 @@
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
           <div class="msg">Ingrese un monto válido (mínimo $1,000).</div>
         </div>
-        <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (tarifa, división, giro, turnos, demanda)</button>
+        <div class="field">
+          <label for="cp">Código postal</label>
+          <input id="cp" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="ej. 76000">
+          <small style="font-size:11px;color:var(--muted)">Lo usamos para las tarifas CFE reales de su división — sin pedir nada más.</small>
+        </div>
+        <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (tarifa, giro, turnos, demanda)</button>
         <div id="afinar" hidden>
-          <div class="cgrid">
-            <div class="field"><label for="tariff">Tarifa CFE</label><select id="tariff"></select></div>
-            <div class="field"><label for="division">División CFE</label><select id="division"></select></div>
-          </div>
+          <div class="field"><label for="tariff">Tarifa CFE (la detectamos por su consumo; ajústela si la conoce)</label><select id="tariff"></select></div>
           <div class="field"><label for="giro">Giro / industria</label><select id="giro"></select></div>
           <div class="cgrid">
             <div class="field"><label for="turno">Horario / turnos</label><select id="turno"></select><small style="font-size:11px;color:var(--muted)">Si lo elige, usamos su horario en vez del típico de su giro.</small></div>
