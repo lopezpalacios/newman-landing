@@ -51,28 +51,29 @@
       const demCost=demandaKw*(T.capacidad+T.distribucion);
       const k=Math.max(spend*0.25,(spend-(T.suministradora||0)-demCost)/variable);
       const ai=k>0?variable+demCost/k:0;
-      if(ai>=0.5 && ai<=8 && k>0){ kwh=k; demandPerKwh=demCost/kwh; allIn=ai; demExact=true; }
+      if(ai>=0.7 && ai<=5 && k>0){ kwh=k; demandPerKwh=demCost/kwh; allIn=ai; demExact=true; }
     }
     const demandMonthly=demandPerKwh*kwh;
-    const demandSave=BESS_RECOVER*demandMonthly;
-    const energySave=SOLAR_COVER*Math.max(0,variable-PPA)*kwh;
+    let demandSave=BESS_RECOVER*demandMonthly;
+    let energySave=SOLAR_COVER*Math.max(0,variable-PPA)*kwh;
     let monthly=demandSave+energySave, p=Math.min(0.32, monthly/spend);   // tope honesto, SIN piso
     monthly=spend*p;
+    const _sc=(demandSave+energySave)>0?monthly/(demandSave+energySave):1; demandSave*=_sc; energySave*=_sc; // reconcilia a lo mostrado
     let cum=0,s=spend; for(let y=0;y<10;y++){ const yp=Math.min(0.40,p+y*0.006); cum+=s*yp*12; s*=(1+CFE_ESC); }
-    return {T,energy,variable,demandPerKwh,allIn,kwh,demandShare:demandPerKwh/allIn,demandMonthly,demandSave,energySave,giro:g,monthly,pct:p*100,annual:monthly*12,tenYr:cum,demExact,refined};
+    return {T,energy,variable,demandPerKwh,allIn,kwh,demandShare:demandPerKwh/allIn,demandMonthly,demandSave,energySave,giro:g,monthly,pct:p*100,annual:monthly*12,tenYr:cum,demExact,demHigh:demExact&&allIn>3.6,refined};
   }
 
   const round1k=n=>Math.round(n/1000)*1000;
   let raf=[];
   function animateNum(el,to,isPct){
-    if(RM){ el.textContent=isPct?Math.round(to)+'%':fmt(to); return; }
+    if(RM){ el.textContent=isPct?Math.round(to)+'%':'≈ '+fmt(to); return; }
     const id={}; raf.push(id); let t0=null;
     const step=ts=>{ if(id.cancel)return; if(t0===null)t0=ts; const k=Math.min((ts-t0)/900,1),v=to*(1-Math.pow(1-k,3));
-      el.textContent=isPct?Math.round(v)+'%':fmt(v); if(k<1)id.h=requestAnimationFrame(step); };
+      el.textContent=isPct?Math.round(v)+'%':'≈ '+fmt(v); if(k<1)id.h=requestAnimationFrame(step); };
     id.h=requestAnimationFrame(step);
   }
 
-  function runCalc(){
+  function runCalc(){ try{
     const $=id=>document.getElementById(id);
     raf.forEach(x=>x.cancel=true); raf=[];
     const spend=parseFloat(($('spend').value||'').replace(/[^\d.]/g,''));
@@ -113,14 +114,16 @@
       `<tr><td>Transmisión+CENACE+conexos</td><td>${r.T.transmision}+${r.T.cenace}+${r.T.conexos} $/kWh</td></tr>`+
       `<tr><td><strong>All-in</strong></td><td><strong>≈ ${r.allIn.toFixed(2)} $/kWh</strong> · ${Math.round(r.kwh).toLocaleString('es-MX')} kWh/mes (inferido)</td></tr>`+
       `</tbody></table>`+
-      `<p style="margin-top:8px">Cómo sale: BESS recupera <strong>~45% de su cargo de demanda</strong> (${fmt(round1k(r.demandSave))}/mes)`+
+      `<p style="margin-top:8px">Cómo sale: BESS recupera <strong>~45% de su cargo de demanda</strong> (recorte de pico típico) (${fmt(round1k(r.demandSave))}/mes)`+
       (r.energySave>0?` + solar (PPA ${PPA} $/kWh) ahorra ${fmt(round1k(r.energySave))} en energía`:` (a ${PPA} $/kWh el solar no abarata su energía — el ahorro es por demanda)`)+
       ` = <strong>${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
     const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(round1k(r.monthly))} al mes, ${Math.round(r.pct)} por ciento de su recibo.`;
     const wa=$('wa-result'); if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, tarifa ${o.t}, división ${o.div}. Ahorro estimado: ${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%). Quiero mi desglose a 10 años.`);
+    if(r.demHigh) $('r-math').innerHTML+='<p style="color:#8a5a06;margin-top:6px">Su demanda contratada implica un costo inusual por kWh — vale la pena revisarla; lo confirmamos en el estudio de carga.</p>';
     $('calc-result').hidden=false;
     $('calc-result').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
     if(window.gtag) gtag('event','result_shown',{spend,tariff:o.t,division:o.div,pct:Math.round(r.pct)});
+    }catch(err){ const e=document.getElementById('calc-err'); if(e){e.textContent='Ocurrió un error al calcular. Escríbanos por WhatsApp y lo hacemos por usted.';e.hidden=false;} }
   }
 
   /* ---- base UI ---- */
