@@ -30,88 +30,105 @@
   const TURNOS = { '':0, t1:0.35, t2:0.55, t3:0.75, cont:0.88 };
   const TURNO_LABEL = {'' :'Usar el típico de mi giro', t1:'1 turno (~8 h)', t2:'2 turnos (~16 h)', t3:'3 turnos (~24 h)', cont:'Continuo 24/7'};
 
-  const PPA = 1.80, BESS_RECOVER = 0.45, SOLAR_NET = 0.10, CFE_ESC = 0.058;
+  const PPA=1.80, BESS_RECOVER=0.45, SOLAR_COVER=0.45, CFE_ESC=0.058;
+  const MINS=1000, MAXS=50000000;
+  let refined=false;
+  function rates(t,div){ return (TARIFFS[t]||{})[div]; }
 
-  function rates(t, div){ return (TARIFFS[t]||{})[div]; }
-
-  function compute(opts){
-    const {spend, t, div, giro, turno, demandaKw} = opts;
-    const T = rates(t, div); if(!T) return null;
-    const g = GIRO[giro] || GIRO.otra;
-    const lf = TURNOS[turno] || g.lf;
-    // energía mezclada según curva del giro (TOU) o plana
-    let energy;
-    if (typeof T.energia === 'object') energy = g.mix[0]*T.energia.base + g.mix[1]*T.energia.intermedio + g.mix[2]*T.energia.punta;
-    else energy = T.energia;
-    const variable = energy + (T.transmision||0) + (T.cenace||0) + (T.conexos||0);   // $/kWh
-    const demandKwhUnit = !!DEMAND_KWH[t];
-    let demandPerKwh = demandKwhUnit ? (T.capacidad + T.distribucion) : (T.capacidad + T.distribucion)/(720*lf);
-    let allIn = variable + demandPerKwh;
-    let kwh = spend / allIn;
-    // si dan demanda contratada (kW) y la tarifa cobra en $/kW → cálculo exacto del cargo de demanda
-    if (demandaKw && !demandKwhUnit){
-      const demandCost = demandaKw * (T.capacidad + T.distribucion);   // $/mes
-      // refinar: kWh ≈ (spend - fijo - demandCost) / variable, acotado
-      const est = Math.max(spend*0.3, (spend - (T.suministradora||0) - demandCost) / variable);
-      kwh = est;
-      demandPerKwh = demandCost / kwh;
-      allIn = variable + demandPerKwh;
+  function compute(o){
+    let {spend,t,div,giro,turno,demandaKw}=o;
+    spend=Number(spend);
+    if(!isFinite(spend)||spend<MINS) return {error:'spend_low'};
+    if(spend>MAXS) return {error:'spend_high'};
+    const T=rates(t,div); if(!T) return {error:'no_rate'};
+    const g=GIRO[giro]||GIRO.otra, lf=TURNOS[turno]||g.lf;
+    const energy=(typeof T.energia==='object')? g.mix[0]*T.energia.base+g.mix[1]*T.energia.intermedio+g.mix[2]*T.energia.punta : T.energia;
+    const variable=energy+(T.transmision||0)+(T.cenace||0)+(T.conexos||0);
+    const dk=!!DEMAND_KWH[t];
+    let demandPerKwh=dk?(T.capacidad+T.distribucion):(T.capacidad+T.distribucion)/(720*lf);
+    let allIn=variable+demandPerKwh, kwh=spend/allIn, demExact=false;
+    if(demandaKw && !dk){
+      const demCost=demandaKw*(T.capacidad+T.distribucion);
+      const k=Math.max(spend*0.25,(spend-(T.suministradora||0)-demCost)/variable);
+      const ai=k>0?variable+demCost/k:0;
+      if(ai>=0.5 && ai<=8 && k>0){ kwh=k; demandPerKwh=demCost/kwh; allIn=ai; demExact=true; }
     }
-    const demandShare = demandPerKwh/allIn, energyShare = variable/allIn;
-    let p = (demandShare*BESS_RECOVER + energyShare*SOLAR_NET)*100;
-    p = Math.min(30, Math.max(18, p));
-    const monthly = spend * p/100;
-    let cum=0, s=spend; for(let y=0;y<10;y++){ const yp=Math.min(0.42, p/100 + y*0.008); cum += s*yp*12; s*=(1+CFE_ESC); }
-    return {T, energy, variable, demandPerKwh, allIn, kwh, demandShare, lf, giro:g, monthly, pct:p, annual:monthly*12, tenYr:cum, demandKwhUnit};
+    const demandMonthly=demandPerKwh*kwh;
+    const demandSave=BESS_RECOVER*demandMonthly;
+    const energySave=SOLAR_COVER*Math.max(0,variable-PPA)*kwh;
+    let monthly=demandSave+energySave, p=Math.min(0.32, monthly/spend);   // tope honesto, SIN piso
+    monthly=spend*p;
+    let cum=0,s=spend; for(let y=0;y<10;y++){ const yp=Math.min(0.40,p+y*0.006); cum+=s*yp*12; s*=(1+CFE_ESC); }
+    return {T,energy,variable,demandPerKwh,allIn,kwh,demandShare:demandPerKwh/allIn,demandMonthly,demandSave,energySave,giro:g,monthly,pct:p*100,annual:monthly*12,tenYr:cum,demExact,refined};
   }
 
-  function animateNum(el, to, isPct){
-    if(RM){ el.textContent = isPct? Math.round(to)+'%' : fmt(to); return; }
-    let t0=null; const step=ts=>{if(t0===null)t0=ts;const k=Math.min((ts-t0)/900,1),v=to*(1-Math.pow(1-k,3));el.textContent=isPct?Math.round(v)+'%':fmt(v);if(k<1)requestAnimationFrame(step);};
-    requestAnimationFrame(step);
+  const round1k=n=>Math.round(n/1000)*1000;
+  let raf=[];
+  function animateNum(el,to,isPct){
+    if(RM){ el.textContent=isPct?Math.round(to)+'%':fmt(to); return; }
+    const id={}; raf.push(id); let t0=null;
+    const step=ts=>{ if(id.cancel)return; if(t0===null)t0=ts; const k=Math.min((ts-t0)/900,1),v=to*(1-Math.pow(1-k,3));
+      el.textContent=isPct?Math.round(v)+'%':fmt(v); if(k<1)id.h=requestAnimationFrame(step); };
+    id.h=requestAnimationFrame(step);
   }
 
   function runCalc(){
     const $=id=>document.getElementById(id);
-    const spend = parseFloat(($('spend').value||'').replace(/[^\d.]/g,''));
-    const t=$('tariff').value, div=$('division').value;
-    const giro=$('giro').value, turno=$('turno').value;
-    const demandaKw = parseFloat(($('demanda').value||'').replace(/[^\d.]/g,''))||0;
-    if(!spend||spend<1000){ $('spend').closest('.field').classList.add('error'); return; }
-    $('spend').closest('.field').classList.remove('error');
-    const r = compute({spend,t,div,giro,turno,demandaKw});
-    if(!r) return;
-    animateNum($('r-month'), r.monthly);
+    raf.forEach(x=>x.cancel=true); raf=[];
+    const spend=parseFloat(($('spend').value||'').replace(/[^\d.]/g,''));
+    const o={spend,t:$('tariff').value,div:$('division').value,giro:$('giro').value,turno:$('turno').value,
+             demandaKw:parseFloat(($('demanda').value||'').replace(/[^\d.]/g,''))||0};
+    const r=compute(o), errEl=$('calc-err');
+    if(r.error){
+      $('spend').closest('.field').classList.add('error');
+      errEl.textContent = r.error==='spend_high'?'Ese monto parece anual o un error — ingrese su gasto MENSUAL.':
+                          r.error==='no_rate'?'No tenemos esa combinación de tarifa/división; pruebe otra.':
+                          'Ingrese su gasto mensual (mínimo $1,000 MXN).';
+      errEl.hidden=false; return;
+    }
+    errEl.hidden=true; $('spend').closest('.field').classList.remove('error');
+    animateNum($('r-month'), round1k(r.monthly));
     animateNum($('r-pct'), r.pct, true);
-    animateNum($('r-year'), r.annual);
-    animateNum($('r-ten'), r.tenYr);
-    // matemática + precios reales usados
+    animateNum($('r-year'), round1k(r.annual));
+    animateNum($('r-ten'), round1k(r.tenYr));
+    const sc=$('r-scope');
+    sc.textContent = r.refined ? `Tarifa ${o.t} · ${o.div} · CFE ${PERIOD}` : 'Estimado genérico (GDMTH · Bajío) — afine con su tarifa y división abajo ↓';
+    sc.className = 'r-scope '+(r.refined?'refined':'generic');
+    // comparativa hoy vs Newman
+    const newmanRate=r.allIn*(1-r.pct/100);
+    $('bar-cfe-val').textContent=r.allIn.toFixed(2)+' $/kWh';
+    $('bar-nm').style.width=Math.max(8,newmanRate/r.allIn*100)+'%';
+    $('bar-nm-val').textContent=newmanRate.toFixed(2)+' $/kWh';
+    // componentes
+    const ds=Math.round(r.demandShare*100);
+    $('bar-dem').style.width=ds+'%'; $('bar-ene').style.width=(100-ds)+'%';
+    $('bar-comp-lbl').innerHTML=`<strong>${ds}%</strong> cargo por demanda · ${100-ds}% energía y cargos`;
+    // derivación reconciliable
     const e=r.T.energia;
-    const energyRow = (typeof e==='object')
-      ? `Energía CFE — base ${e.base.toFixed(2)} · intermedia ${e.intermedio.toFixed(2)} · punta ${e.punta.toFixed(2)} $/kWh (mezcla ${r.giro.l})`
-      : `Energía CFE — ${e.toFixed(2)} $/kWh`;
-    const demRow = r.demandKwhUnit
-      ? `Demanda — capacidad ${r.T.capacidad} + distribución ${r.T.distribucion} $/kWh`
-      : `Demanda — capacidad ${r.T.capacidad} + distribución ${r.T.distribucion} $/kW-mes (factor de carga ${Math.round(r.lf*100)}%)`;
-    $('r-math').innerHTML =
-      `<strong>Tarifa ${t} · ${div} · CFE ${PERIOD}</strong> (datos reales del almacén Newman):<br>`+
-      `· ${energyRow}<br>· ${demRow}<br>· Transmisión ${r.T.transmision} + CENACE ${r.T.cenace} + conexos ${r.T.conexos} $/kWh<br>`+
-      `<br>Su costo all-in ≈ <strong>${r.allIn.toFixed(2)} MXN/kWh</strong> · estimamos <strong>${Math.round(r.kwh).toLocaleString('es-MX')} kWh/mes</strong>. `+
-      `El <strong>${Math.round(r.demandShare*100)}% de su recibo es cargo por demanda</strong> y el sol no lo toca — la palanca principal es el almacenamiento (BESS), más solar. `+
-      `Ahorro conservador <strong>${Math.round(r.pct)}%</strong>. Modelamos 18–30% a propósito; se valida con un estudio de carga antes de firmar.`;
-    const wa=$('wa-result');
-    if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, tarifa ${t}, división ${div}, giro ${r.giro.l}. Estimado de ahorro: ${fmt(r.monthly)}/mes. Quiero mi desglose a 10 años.`);
-    const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(r.monthly)} al mes (${Math.round(r.pct)}% de su recibo), ${fmt(r.annual)} al año. Tarifa ${t}, división ${div}.`;
+    const eRow=(typeof e==='object')?`base ${e.base.toFixed(2)} · interm. ${e.intermedio.toFixed(2)} · punta ${e.punta.toFixed(2)}`:e.toFixed(2);
+    $('r-math').innerHTML=
+      `<table class="mtab"><tbody>`+
+      `<tr><td>Energía CFE</td><td>${eRow} $/kWh</td></tr>`+
+      `<tr><td>Demanda (cap.+distrib.)</td><td>${r.T.capacidad}+${r.T.distribucion}${r.demExact?' $/kW · su demanda contratada':''}</td></tr>`+
+      `<tr><td>Transmisión+CENACE+conexos</td><td>${r.T.transmision}+${r.T.cenace}+${r.T.conexos} $/kWh</td></tr>`+
+      `<tr><td><strong>All-in</strong></td><td><strong>≈ ${r.allIn.toFixed(2)} $/kWh</strong> · ${Math.round(r.kwh).toLocaleString('es-MX')} kWh/mes (inferido)</td></tr>`+
+      `</tbody></table>`+
+      `<p style="margin-top:8px">Cómo sale: BESS recupera <strong>~45% de su cargo de demanda</strong> (${fmt(round1k(r.demandSave))}/mes)`+
+      (r.energySave>0?` + solar (PPA ${PPA} $/kWh) ahorra ${fmt(round1k(r.energySave))} en energía`:` (a ${PPA} $/kWh el solar no abarata su energía — el ahorro es por demanda)`)+
+      ` = <strong>${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
+    const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(round1k(r.monthly))} al mes, ${Math.round(r.pct)} por ciento de su recibo.`;
+    const wa=$('wa-result'); if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, tarifa ${o.t}, división ${o.div}. Ahorro estimado: ${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%). Quiero mi desglose a 10 años.`);
     $('calc-result').hidden=false;
     $('calc-result').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
-    if(window.gtag) gtag('event','result_shown',{spend,tariff:t,division:div,giro,pct:Math.round(r.pct)});
+    if(window.gtag) gtag('event','result_shown',{spend,tariff:o.t,division:o.div,pct:Math.round(r.pct)});
   }
 
   /* ---- base UI ---- */
   function initNav(){const nav=document.querySelector('.nav');if(!nav)return;let last=0;addEventListener('scroll',()=>{const y=scrollY;nav.classList.toggle('hidden',y>last&&y>140);last=y;},{passive:true});nav.querySelector('.burger')?.addEventListener('click',e=>{const o=nav.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',String(o));});document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id.length<2)return;const el=document.querySelector(id);if(el){e.preventDefault();el.scrollIntoView({behavior:RM?'auto':'smooth'});nav.classList.remove('open');}}));}
   function initReveal(){const els=document.querySelectorAll('[data-reveal]');if(RM||!('IntersectionObserver'in window)){els.forEach(e=>e.classList.add('in'));return;}const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});els.forEach(e=>io.observe(e));}
   function initAccordion(){document.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',()=>{const o=h.getAttribute('aria-expanded')==='true';h.setAttribute('aria-expanded',String(!o));const b=h.nextElementSibling;b.style.maxHeight=o?'0px':b.scrollHeight+'px';}));}
-  function fillSelect(id, entries, sel){const el=document.getElementById(id);if(!el)return;entries.forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if(v===sel)o.selected=true;el.append(o);});}
+  function fillSelect(id,entries,sel){const el=document.getElementById(id);if(!el)return;entries.forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if(v===sel)o.selected=true;el.append(o);});}
+  const isEmailOrPhone=v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)||/^[\d+()\-\s]{8,}$/.test(v.replace(/\s/g,''));
 
   addEventListener('DOMContentLoaded',()=>{
     initNav(); initReveal(); initAccordion();
@@ -119,26 +136,29 @@
     fillSelect('division', Object.keys(TARIFFS.GDMTH).sort().map(d=>[d,d]), 'Bajío');
     fillSelect('giro', Object.keys(GIRO).map(k=>[k,GIRO[k].l]), 'manufactura');
     fillSelect('turno', Object.keys(TURNOS).map(k=>[k,TURNO_LABEL[k]]), '');
+    const spendEl=document.getElementById('spend');
+    spendEl?.addEventListener('input',()=>{const d=spendEl.value.replace(/[^\d]/g,'');spendEl.value=d?Number(d).toLocaleString('es-MX'):'';});
     document.getElementById('calc-run')?.addEventListener('click', runCalc);
-    document.getElementById('spend')?.addEventListener('keydown', e=>{ if(e.key==='Enter') runCalc(); });
+    spendEl?.addEventListener('keydown', e=>{ if(e.key==='Enter') runCalc(); });
     const af=document.getElementById('afinar-toggle');
-    af?.addEventListener('click',()=>{const p=document.getElementById('afinar');const open=p.hidden;p.hidden=!open;af.setAttribute('aria-expanded',String(open));af.textContent=open?'− Menos detalle':'+ Afinar mi estimado (tarifa, división, giro, turnos, demanda)';});
-    // repopulate division when tariff changes (guards null rates)
-    const tEl=document.getElementById('tariff');
-    tEl?.addEventListener('change',()=>{const cur=document.getElementById('division').value;const el=document.getElementById('division');el.innerHTML='';Object.keys(TARIFFS[tEl.value]||TARIFFS.GDMTH).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;if(d===cur)o.selected=true;el.append(o);});});
+    af?.addEventListener('click',()=>{const p=document.getElementById('afinar');const open=p.hidden;p.hidden=!open;refined=open;af.setAttribute('aria-expanded',String(open));af.textContent=open?'− Menos detalle':'+ Afinar mi estimado (tarifa, división, giro, turnos, demanda)';});
+    document.getElementById('tariff')?.addEventListener('change',e=>{const cur=document.getElementById('division').value;const el=document.getElementById('division');el.innerHTML='';Object.keys(TARIFFS[e.target.value]||TARIFFS.GDMTH).sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;if(d===cur)o.selected=true;el.append(o);});});
+    // collapse-math toggle
+    document.getElementById('math-toggle')?.addEventListener('click',e=>{e.preventDefault();const m=document.getElementById('r-math');const open=m.hidden;m.hidden=!open;e.target.textContent=open?'Ocultar el cálculo':'Ver el cálculo, tarifa por tarifa →';});
     // email capture toggle
     document.getElementById('email-toggle')?.addEventListener('click',e=>{e.preventDefault();const c=document.getElementById('capture');c.hidden=false;e.target.style.display='none';c.querySelector('input')?.focus();});
-    // form submit -> mailto fallback (works with no backend) + announce
+    // form submit -> honest mailto (no false success)
     document.getElementById('capture')?.addEventListener('submit',e=>{
       e.preventDefault();
-      const name=(document.getElementById('c-name').value||'').trim();
-      const emp=(document.getElementById('c-emp').value||'').trim();
-      const con=(document.getElementById('c-contact').value||'').trim();
-      if(!name||!emp||!con){[['c-name',name],['c-emp',emp],['c-contact',con]].forEach(([id,v])=>document.getElementById(id).closest('.field').classList.toggle('error',!v));return;}
-      if(window.gtag) gtag('event','lead_captured');
-      const body=encodeURIComponent(`Nombre: ${name}\nEmpresa: ${emp}\nContacto: ${con}\nGasto CFE: ${document.getElementById('spend').value}\nTarifa: ${document.getElementById('tariff').value} / División: ${document.getElementById('division').value}`);
+      const $=id=>document.getElementById(id);
+      const name=($('c-name').value||'').trim(), emp=($('c-emp').value||'').trim(), con=($('c-contact').value||'').trim();
+      let bad=false;
+      [['c-name',!!name],['c-emp',!!emp],['c-contact',con&&isEmailOrPhone(con)]].forEach(([id,ok])=>{document.getElementById(id).closest('.field').classList.toggle('error',!ok);if(!ok)bad=true;});
+      if(bad){ $('capture-ok').textContent='Revise los campos: nombre, empresa y un WhatsApp o correo válido.'; return; }
+      if(window.gtag) gtag('event','lead_submit');
+      const body=encodeURIComponent(`Nombre: ${name}\nEmpresa: ${emp}\nContacto: ${con}\nGasto CFE: ${$('spend').value}\nTarifa/División: ${$('tariff').value} / ${$('division').value}`);
       window.location.href=`mailto:hola@newman.re?subject=${encodeURIComponent('Solicitud de desglose de ahorro')}&body=${body}`;
-      e.target.innerHTML='<p style="color:#0d6347;font-family:var(--display)" role="status">✓ Gracias, '+name+'. Le enviamos su desglose a 10 años en breve.</p>';
+      $('capture-ok').textContent='Se abrió su correo — presione Enviar para mandárnoslo. Si no se abrió, escríbanos por WhatsApp.';
     });
   });
   window.NewmanCalc = { compute, rates, TARIFFS, GIRO };

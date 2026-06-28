@@ -13,7 +13,8 @@
 <link rel="canonical" href="https://lopezpalacios.github.io/newman-landing/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="newman.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"Newman Energy — Ahorro de energía C&I","areaServed":"MX","provider":{"@type":"Organization","name":"Newman Energy"},"description":"Energía renovable sin inversión inicial para industria y comercio en México: PPA solar, almacenamiento BESS e inteligencia de tarifas CFE."}
@@ -34,7 +35,7 @@
   .calc .hint{font-size:13px;color:var(--muted);margin-bottom:var(--s-16)}
   .calc .field{margin-bottom:var(--s-12)}
   .calc .btn{width:100%;justify-content:center;font-size:16px;margin-top:var(--s-8)}
-  .calc .nolock{display:flex;align-items:center;gap:6px;font-size:12px;color:#0d6347;margin-top:var(--s-12);font-family:var(--display);letter-spacing:.03em}
+  .calc .nolock{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);margin-top:var(--s-12);font-family:var(--display);letter-spacing:.03em}
   .calc .nolock::before{content:"✓";font-weight:700}
   .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-12)}
   @media(max-width:480px){.cgrid{grid-template-columns:1fr}}
@@ -74,6 +75,33 @@
   .persona{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-24);margin-top:var(--s-36)}
   @media(max-width:760px){.persona{grid-template-columns:1fr}}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0}
+  /* result viz (council fixes) */
+  .calc-err{color:#b3382c;font-size:13px;margin-top:8px;font-family:var(--display)}
+  .contrast-strip{font-size:12px;color:var(--muted);margin-top:var(--s-8);line-height:1.45}
+  .r-scope{font-family:var(--display);font-size:12px;letter-spacing:.04em;padding:6px 10px;border-radius:var(--r-sm);margin-bottom:var(--s-16)}
+  .r-scope.generic{background:#f6ece0;color:#8a5a06}.r-scope.refined{background:var(--accent-tint);color:var(--accent)}
+  .cmp{margin-bottom:var(--s-16)}
+  .cmp-row{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:10px;margin-bottom:8px}
+  .cmp-lbl{font-family:var(--display);font-size:12px;color:var(--muted)}
+  .cmp-bar{height:18px;background:#efe9f5;border-radius:var(--r-pill);overflow:hidden}
+  .cmp-fill{display:block;height:100%;border-radius:var(--r-pill)}
+  .cmp-fill.cfe{width:100%;background:#cabfdd}.cmp-fill.nm{background:var(--accent)}
+  .cmp-val{font-family:var(--display);font-size:12px;font-weight:var(--w-med);color:var(--text);min-width:78px;text-align:right}
+  .r-hero{text-align:center;margin:var(--s-16) 0 var(--s-12)}
+  .r-hero .n{font-family:var(--display);font-weight:var(--w-light);font-size:clamp(40px,9vw,60px);line-height:1;color:var(--accent)}
+  .r-hero small{display:block;font-family:var(--display);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:8px}
+  .big3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-12);text-align:center}
+  .big3 .n2{font-family:var(--display);font-weight:var(--w-light);font-size:22px;color:var(--text);line-height:1}
+  .big3 small{display:block;font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--display)}
+  .compbar{display:flex;height:14px;border-radius:var(--r-pill);overflow:hidden;margin-top:var(--s-16)}
+  .compbar .seg{height:100%}.compbar .seg.dem{background:var(--accent)}.compbar .seg.ene{background:#B89BC9}
+  .compbar-lbl{font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--display)}
+  .mt-link{color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med);text-decoration:none}
+  .mtab{width:100%;border-collapse:collapse;font-size:12px}.mtab td{padding:3px 0;border-bottom:1px solid var(--line);vertical-align:top}.mtab td:last-child{text-align:right;color:var(--text)}.mtab td:first-child{color:var(--muted);padding-right:12px}
+  [data-reveal].in .case,.result:not([hidden]) .r-hero{animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.result .r-hero{animation:none}}
+  .upload-wa{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -118,7 +146,7 @@
     <div class="hero-grid">
       <div>
         <p class="kicker">Industria y comercio · México</p>
-        <h1>Sabemos cuánto paga de más a CFE.<br><b>Véalo en 30 segundos.</b></h1>
+        <h1>Su ahorro real en pesos —<br><b>sin registro, sin mínimos de consumo.</b></h1>
         <p class="lead"><strong style="color:var(--text)">Empresas como la suya ahorran 18–30%.</strong> Sin registro para ver su número — usamos las tarifas reales de CFE y le mostramos la cuenta, no un porcentaje inflado. Energía renovable <strong>sin inversión inicial</strong>; ideal para nearshoring en el Bajío y el norte.</p>
         <div class="badges">
           <span class="b">Tarifas CFE reales · jun 2026</span>
@@ -131,7 +159,7 @@
       <div class="calc" id="calc">
         <h3>Calcule su ahorro</h3>
         <p class="hint">Su gasto mensual de CFE basta para empezar. Afine con su división y giro para más precisión — sin pedir sus datos primero.</p>
-        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$62,000/mes (25%)</strong>. Calcule el suyo ↓</p>
+        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$47,000/mes (19%)</strong> — su número exacto depende de su tarifa. Calcúlelo ↓</p>
         <div class="field">
           <label for="spend">Gasto mensual CFE (MXN)</label>
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
@@ -150,17 +178,27 @@
           </div>
         </div>
         <button class="btn" id="calc-run" type="button">Ver mi ahorro →</button>
+        <p class="calc-err" id="calc-err" role="alert" hidden></p>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
+        <p class="contrast-strip">Otros le piden registrarse, o un mínimo de 60,000 kWh, para ver un número. Aquí lo ve ya — y le mostramos la cuenta.</p>
         <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'calc'})">📎 ¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
 
         <div class="result" id="calc-result" hidden>
-          <div class="big">
-            <div class="cell"><div class="n" id="r-month">$0</div><small>Ahorro estimado / mes</small></div>
-            <div class="cell"><div class="n" id="r-pct">0%</div><small>De su recibo actual</small></div>
-            <div class="cell"><div class="n" id="r-year">$0</div><small>Ahorro / año</small></div>
-            <div class="cell"><div class="n" id="r-ten">$0</div><small>Acumulado a 10 años</small></div>
+          <p id="r-scope" class="r-scope generic"></p>
+          <div class="cmp">
+            <div class="cmp-row"><span class="cmp-lbl">Hoy (CFE)</span><span class="cmp-bar"><span class="cmp-fill cfe"></span></span><span class="cmp-val" id="bar-cfe-val"></span></div>
+            <div class="cmp-row"><span class="cmp-lbl">Con Newman</span><span class="cmp-bar"><span class="cmp-fill nm" id="bar-nm"></span></span><span class="cmp-val" id="bar-nm-val"></span></div>
           </div>
-          <p class="math" id="r-math"></p>
+          <div class="r-hero"><div class="n" id="r-month">$0</div><small>Ahorro estimado al mes</small></div>
+          <div class="big3">
+            <div class="cell"><div class="n2" id="r-pct">0%</div><small>De su recibo</small></div>
+            <div class="cell"><div class="n2" id="r-year">$0</div><small>Al año</small></div>
+            <div class="cell"><div class="n2" id="r-ten">$0</div><small>10 años</small></div>
+          </div>
+          <div class="compbar"><span class="seg dem" id="bar-dem"></span><span class="seg ene" id="bar-ene"></span></div>
+          <p class="compbar-lbl" id="bar-comp-lbl"></p>
+          <p style="margin-top:var(--s-12)"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo, tarifa por tarifa →</a></p>
+          <div class="math" id="r-math" hidden></div>
           <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
           <a class="wa-inline" id="wa-result" href="#" onclick="window.gtag&&gtag('event','whatsapp_click',{src:'result'})">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
@@ -211,7 +249,7 @@
       <div class="case" data-reveal><div class="big">$0</div><p class="muted" style="margin-top:8px">Inversión inicial del cliente — modelo PPA / BESS como servicio. Ahorro desde el primer mes.</p></div>
     </div>
     <div class="logos" aria-label="Referencias regulatorias y de calidad">
-      <span>CRE</span><span>NOM-001-SEDE</span><span>ASOLMEX</span><span>Equipo Tier-1</span><span>Datos CFE · CENACE · DOF</span>
+      <span><strong>Datos:</strong> CFE · CENACE · DOF</span><span><strong>Cumplimiento:</strong> NOM-001-SEDE · CRE</span><span>Tarifas vigentes a jun 2026</span>
     </div>
     <p class="muted" style="margin-top:var(--s-16);font-size:13px">Rangos modelados con tarifas CFE reales (almacén Newman · CFE/CENACE, jun 2026); su número exacto se valida con un estudio de carga. Publicaremos casos verificados conforme cerremos proyectos.</p>
   </div>
