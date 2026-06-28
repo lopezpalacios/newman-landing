@@ -15,7 +15,99 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&family=Inter:wght@400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="newman.css">
+<!-- newman.css inlined (copy of newman.css) — removes the only render-blocking request; edit both if the base kit changes -->
+<style id="newman-base">
+:root{--bg:#F6F4F9;--bg-2:#ECE7F3;--surface:#FFFFFF;--accent-tint:#F1E9F4;--text:#221A33;--muted:#5F5870;--on-dark:#EDEAF4;--on-dark-muted:#B7B0C8;--navy:#191B4D;--accent:#621558;--accent-hover:#4C1043;--magenta:#B80E65;--magenta-ink:#8A0A4B;--line:#E4DEF1;--white:#FFFFFF;--logo-grad:linear-gradient(105deg,#191B4D,#3A1852,#981060,#B80E65);--display:'Montserrat','Arial Narrow',Arial,sans-serif;--body:'Inter',-apple-system,BlinkMacSystemFont,Arial,sans-serif;--text-label:12px;--track-label:.14em;--text-body-sm:14px;--text-body:16px;--text-subheading:22px;--text-heading:32px;--text-display:clamp(40px,6vw,64px);--lead-display:1.02;--track-display:.01em;--lead-heading:1.15;--lead-body:1.6;--w-light:300;--w-reg:400;--w-med:500;--w-semi:600;--s-4:4px;--s-8:8px;--s-12:12px;--s-16:16px;--s-24:24px;--s-36:36px;--s-48:48px;--s-60:60px;--s-96:96px;--s-120:120px;--maxw:1200px;--r-sm:8px;--r-nav:16px;--r-input:12px;--r-card:24px;--r-media:64px;--r-pill:100px;--shadow:0 12px 44px rgba(34,26,51,.12);--ring:0 0 0 3px rgba(98,21,88,.30)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);color:var(--text);background:var(--bg);line-height:var(--lead-body);-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+.skip{position:absolute;left:-999px;top:0;z-index:300;background:var(--navy);color:#fff;padding:12px 18px;border-radius:0 0 var(--r-sm) 0}
+.skip:focus{left:0}
+:where(a,button,input,textarea,select,[tabindex]):focus-visible{outline:none;box-shadow:var(--ring);border-radius:var(--r-sm)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0}
+h1,h2,h3,h4{font-family:var(--display);line-height:var(--lead-heading);font-weight:var(--w-semi);color:var(--navy)}
+.h-xl{font-size:var(--text-display);font-weight:var(--w-light);line-height:var(--lead-display);letter-spacing:var(--track-display)}
+.h-lg{font-size:clamp(30px,4.4vw,46px);font-weight:var(--w-light);line-height:1.05;letter-spacing:var(--track-display)}
+.h-md{font-size:var(--text-heading);font-weight:var(--w-med);letter-spacing:.005em}
+p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
+.lead{font-size:clamp(17px,2.1vw,20px);line-height:1.65;font-weight:var(--w-light);color:var(--text)}
+.muted{color:var(--muted);font-size:var(--text-body-sm)}
+.caps{font-family:var(--display);font-weight:var(--w-light);text-transform:uppercase;letter-spacing:.36em}
+.kicker{display:inline-flex;align-items:center;gap:var(--s-8);font-family:var(--display);font-weight:var(--w-med);font-size:var(--text-label);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--accent);margin-bottom:var(--s-24)}
+.kicker::before{content:"";width:6px;height:6px;background:var(--magenta);flex:none}
+.center .kicker,.kicker.center{justify-content:center;width:100%}
+.accent-bar{height:4px;width:100%;background:var(--accent);border-radius:var(--r-pill)}
+.grad-text{color:var(--accent)}
+.section-rule{height:3px;width:56px;background:var(--accent);border-radius:var(--r-pill);margin:var(--s-12) 0 var(--s-36)}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(20px,5vw,40px)}
+.section{padding-block:clamp(var(--s-60),9vw,var(--s-120))}
+.panel{background:var(--bg-2)}
+.grid{display:grid;gap:var(--s-24)}
+.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.center{text-align:center}.center .section-rule{margin-inline:auto}.center p{margin-inline:auto}
+.nav{position:sticky;top:var(--s-16);z-index:50;margin-inline:auto;max-width:var(--maxw);padding-inline:clamp(12px,3vw,20px);transition:transform .3s}
+.nav.hidden{transform:translateY(-140%)}
+.nav .row{display:flex;align-items:center;justify-content:space-between;gap:var(--s-24);background:var(--accent);border:1px solid rgba(255,255,255,.10);border-radius:var(--r-nav);padding:12px clamp(16px,3vw,24px)}
+.nav .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav .brand svg{height:22px;width:auto}
+.nav .brand .word{fill:#fff}
+.nav .links{display:flex;align-items:center;gap:var(--s-24)}
+.nav .links a{font-family:var(--display);font-size:var(--text-body-sm);font-weight:var(--w-reg);letter-spacing:.02em;text-decoration:none;color:#fff;opacity:.78;transition:opacity .15s}
+.nav .links a:hover,.nav .links a[aria-current="page"]{opacity:1}
+.nav .links a.btn{opacity:1;color:var(--accent);background:#fff;border-color:#fff}
+.nav .links a.btn:hover{background:var(--accent-tint);border-color:var(--accent-tint)}
+.nav .burger{display:none;background:none;border:0;cursor:pointer;font-size:22px;line-height:1;color:#fff}
+.hero{position:relative;overflow:hidden;background:var(--bg-2)}
+.hero .wrap{position:relative;z-index:2;padding-block:clamp(var(--s-96),15vw,170px)}
+.hero h1{font-family:var(--display);font-weight:var(--w-light);font-size:clamp(34px,6.5vw,72px);line-height:1.0;letter-spacing:.01em;color:var(--navy)}
+.hero h1 b{font-weight:var(--w-semi);color:var(--accent)}
+.hero .lead{margin:var(--s-24) 0 var(--s-36);max-width:48ch;color:var(--text)}
+.btn,.btn-outline{display:inline-flex;align-items:center;gap:var(--s-8);font-family:var(--display);font-weight:var(--w-med);font-size:var(--text-body-sm);letter-spacing:.02em;border-radius:var(--r-pill);padding:14px 26px;cursor:pointer;text-decoration:none;transition:transform .15s,background .15s,color .15s,border-color .15s}
+.btn{color:#fff;background:var(--accent);border:1.5px solid var(--accent)}
+.btn:hover{background:var(--accent-hover);border-color:var(--accent-hover);transform:translateY(-2px)}
+.btn-outline{color:var(--accent);background:transparent;border:1.5px solid var(--accent)}
+.btn-outline:hover{background:var(--accent);color:#fff}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--s-36);transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.card h3{font-size:var(--text-subheading);font-weight:var(--w-med);margin-bottom:var(--s-12);letter-spacing:.005em}
+.card p{color:var(--muted)}
+.stat .num{font-family:var(--display);font-weight:var(--w-light);font-size:clamp(40px,5.5vw,var(--text-display));line-height:1;letter-spacing:.01em;color:var(--accent)}
+.acc-item{border-bottom:1px solid var(--line)}
+.acc-head{width:100%;text-align:left;font-family:var(--display);font-weight:var(--w-reg);font-size:var(--text-subheading);padding:var(--s-24) 0;background:none;border:0;cursor:pointer;display:flex;justify-content:space-between;gap:var(--s-24);align-items:center;color:var(--navy)}
+.acc-head .pm{flex:none;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r-pill);border:1px solid var(--accent);background:var(--surface);color:var(--accent);font-size:20px;line-height:1;transition:transform .25s}
+.acc-head[aria-expanded=true] .pm{transform:rotate(45deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.acc-body p{padding-bottom:var(--s-24);font-size:var(--text-body-sm);color:var(--muted)}
+.field{margin-bottom:var(--s-16)}
+.field label{display:flex;align-items:center;gap:var(--s-8);font-family:var(--display);font-size:var(--text-label);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted);margin-bottom:var(--s-8)}
+.field label::before{content:"";width:5px;height:5px;background:var(--magenta);flex:none}
+.field input,.field textarea,.field select{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-input);font-family:var(--body);font-size:var(--text-body);color:var(--text);background:#fff;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:0;border-color:var(--accent);box-shadow:var(--ring)}
+.field.error input,.field.error textarea{border-color:var(--danger,#9b2d4f)}
+.field .msg{display:none;color:var(--danger,#9b2d4f);font-size:12.5px;margin-top:var(--s-8)}
+.field.error .msg{display:block}
+.badge{display:inline-block;font-family:var(--display);font-size:var(--text-label);font-weight:var(--w-med);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:var(--r-sm);padding:5px 12px}
+.footer{background:var(--navy);color:var(--on-dark-muted);padding-block:var(--s-60) var(--s-36)}
+.footer .accent-bar{margin-bottom:var(--s-48)}
+.footer h2,.footer h3,.footer .caps{color:#fff}
+.footer .cols{display:flex;justify-content:space-between;gap:var(--s-48);flex-wrap:wrap;margin-bottom:var(--s-36)}
+.footer a{color:var(--on-dark);text-decoration:none;display:block;margin-bottom:var(--s-8);font-size:var(--text-body-sm)}
+.footer a:hover{color:#fff}
+.footer .muted{color:var(--on-dark-muted)}
+.footer .end{display:flex;justify-content:space-between;gap:var(--s-24);flex-wrap:wrap;font-size:var(--text-label);letter-spacing:.04em;border-top:1px solid rgba(255,255,255,.12);padding-top:var(--s-24)}
+[data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-reveal].in{opacity:1;transform:none}
+[data-reveal]:nth-child(2){transition-delay:.07s}[data-reveal]:nth-child(3){transition-delay:.14s}[data-reveal]:nth-child(4){transition-delay:.21s}
+@media (max-width:860px){.grid-2,.grid-3,.grid-4,.stats{grid-template-columns:1fr}
+  .nav .links{position:absolute;top:100%;left:0;right:0;margin-top:var(--s-8);flex-direction:column;align-items:flex-start;gap:0;background:var(--accent);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-nav);padding:var(--s-8) 0;display:none}
+  .nav.open .links{display:flex}
+  .nav .links a{padding:14px clamp(20px,5vw,24px);width:100%;opacity:1}
+  .nav .burger{display:block}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+@media print{.nav{display:none}}
+</style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"Newman Energy — Ahorro de energía C&I","areaServed":"MX","provider":{"@type":"Organization","name":"Newman Energy"},"description":"Energía renovable sin inversión inicial para industria y comercio en México: PPA solar, almacenamiento BESS e inteligencia de tarifas CFE."}
 </script>
@@ -72,11 +164,24 @@
   .persona{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-24);margin-top:var(--s-36)}
   @media(max-width:760px){.persona{grid-template-columns:1fr}}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0}
-  /* result viz (council fixes) */
-  .calc-err{color:#b3382c;font-size:13px;margin-top:8px;font-family:var(--display)}
+  /* result viz (council fixes) — palette-tokenized warn/danger (plum-leaning, in-system) */
+  :root{--danger:#9b2d4f;--warn:#7a5a2e;--warn-bg:#f3ece2}
+  .calc-err{color:var(--danger);font-size:13px;margin-top:8px;font-family:var(--display)}
   .contrast-strip{font-size:12px;color:var(--muted);margin-top:var(--s-8);line-height:1.45}
+  .cp-echo{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+  .cp-echo.ok{color:var(--accent)}
+  .r-trust{font-size:12.5px;color:var(--text);background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;margin:0 0 var(--s-12);line-height:1.4}
+  .wa-who{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.45}
+  .mnote{margin:6px 0 0;padding-left:18px}.mnote li{margin-bottom:4px}
+  .mwarn{color:var(--warn);margin-top:6px}
+  .cap-msg{font-size:12px;color:var(--muted);margin-top:8px}.cap-msg.err{color:var(--danger)}
+  .vs{width:100%;border-collapse:collapse;font-size:13px;margin-top:var(--s-24)}
+  .vs th,.vs td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .vs thead th{font-family:var(--display);font-weight:var(--w-med);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .vs th:first-child,.vs td:first-child{color:var(--muted)}
+  .vs .nm{color:var(--accent);font-weight:var(--w-med)}
   .r-scope{font-family:var(--display);font-size:12px;letter-spacing:.04em;padding:6px 10px;border-radius:var(--r-sm);margin-bottom:var(--s-16)}
-  .r-scope.generic{background:#f6ece0;color:#8a5a06}.r-scope.refined{background:var(--accent-tint);color:var(--accent)}
+  .r-scope.generic{background:var(--warn-bg);color:var(--warn)}.r-scope.refined{background:var(--accent-tint);color:var(--accent)}
   .cmp{margin-bottom:var(--s-16)}
   .cmp-row{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:10px;margin-bottom:8px}
   .cmp-lbl{font-family:var(--display);font-size:12px;color:var(--muted)}
@@ -87,7 +192,7 @@
   .r-hero{text-align:center;margin:var(--s-16) 0 var(--s-12)}
   .r-hero .n{font-family:var(--display);font-weight:var(--w-light);font-size:clamp(40px,9vw,60px);line-height:1;color:var(--accent)}
   .r-hero small{display:block;font-family:var(--display);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:8px}
-  .big3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-12);text-align:center}
+  .big3{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-12);text-align:center;margin-bottom:var(--s-16)}
   .big3 .n2{font-family:var(--display);font-weight:var(--w-light);font-size:22px;color:var(--text);line-height:1}
   .big3 small{display:block;font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--display)}
   .compbar{display:flex;height:14px;border-radius:var(--r-pill);overflow:hidden;margin-top:var(--s-16)}
@@ -144,7 +249,7 @@
       <div>
         <p class="kicker">Industria y comercio · México</p>
         <h1>Su ahorro real en pesos —<br><b>sin registro, sin mínimos de consumo.</b></h1>
-        <p class="lead"><strong style="color:var(--text)">Empresas como la suya ahorran 18–30%.</strong> Sin registro para ver su número — usamos las tarifas reales de CFE y le mostramos la cuenta, no un porcentaje inflado. Energía renovable <strong>sin inversión inicial</strong>; ideal para nearshoring en el Bajío y el norte.</p>
+        <p class="lead"><strong style="color:var(--text)">Empresas como la suya ahorran 18–30%</strong>, con la cuenta a la vista. Sin registro, sin inversión inicial — energía renovable para industria y comercio en México.</p>
         <div class="badges">
           <span class="b">Tarifas CFE reales · jun 2026</span>
           <span class="b">Sin inversión inicial (PPA)</span>
@@ -156,7 +261,7 @@
       <div class="calc" id="calc">
         <h3>Calcule su ahorro</h3>
         <p class="hint">Su gasto mensual de CFE basta para empezar. Afine con su división y giro para más precisión — sin pedir sus datos primero.</p>
-        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$47,000/mes (19%)</strong> — su número exacto depende de su tarifa. Calcúlelo ↓</p>
+        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$47,000/mes (≈19%)</strong> — su número exacto depende de su tarifa. Calcúlelo ↓</p>
         <div class="field">
           <label for="spend">Gasto mensual CFE (MXN)</label>
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
@@ -165,7 +270,7 @@
         <div class="field">
           <label for="cp">Código postal</label>
           <input id="cp" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="ej. 76000">
-          <small style="font-size:11px;color:var(--muted)">Lo usamos para las tarifas CFE reales de su división — sin pedir nada más.</small>
+          <small id="cp-echo" class="cp-echo">Lo usamos para las tarifas CFE reales de su división — sin pedir nada más.</small>
         </div>
         <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (tarifa, giro, turnos, demanda)</button>
         <div id="afinar" hidden>
@@ -180,7 +285,7 @@
         <p class="calc-err" id="calc-err" role="alert" hidden></p>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
         <p class="contrast-strip">Otros le piden registrarse, o un mínimo de 60,000 kWh, para ver un número. Aquí lo ve ya — y le mostramos la cuenta.</p>
-        <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'calc'})">📎 ¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
+        <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'calc'})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.19a1 1 0 0 1-1.41-1.41l8.49-8.49"/></svg>¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
 
         <div class="result" id="calc-result" hidden>
           <p id="r-scope" class="r-scope generic"></p>
@@ -188,21 +293,24 @@
             <div class="cmp-row"><span class="cmp-lbl">Hoy (CFE)</span><span class="cmp-bar"><span class="cmp-fill cfe"></span></span><span class="cmp-val" id="bar-cfe-val"></span></div>
             <div class="cmp-row"><span class="cmp-lbl">Con Newman</span><span class="cmp-bar"><span class="cmp-fill nm" id="bar-nm"></span></span><span class="cmp-val" id="bar-nm-val"></span></div>
           </div>
-          <div class="r-hero"><div class="n" id="r-month">$0</div><small>Ahorro estimado al mes</small></div>
-          <div class="big3">
-            <div class="cell"><div class="n2" id="r-pct">0%</div><small>De su recibo</small></div>
-            <div class="cell"><div class="n2" id="r-year">$0</div><small>Al año</small></div>
-            <div class="cell"><div class="n2" id="r-ten">$0</div><small>10 años</small></div>
-          </div>
-          <div class="compbar"><span class="seg dem" id="bar-dem"></span><span class="seg ene" id="bar-ene"></span></div>
-          <p class="compbar-lbl" id="bar-comp-lbl"></p>
-          <p style="margin-top:var(--s-12)"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo, tarifa por tarifa →</a></p>
-          <div class="math" id="r-math" hidden></div>
-          <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
+          <div class="r-hero"><div class="n" id="r-month">$0</div><small id="r-sub">Ahorro estimado al mes</small></div>
+          <p id="r-trust" class="r-trust" hidden></p>
           <a class="wa-inline" id="wa-result" href="#" onclick="window.gtag&&gtag('event','whatsapp_click',{src:'result'})">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
             Enviar mi número por WhatsApp
           </a>
+          <p class="wa-who">Le responde una persona del equipo Newman, no un bot — normalmente en menos de 2 horas hábiles. Sin capex ni deuda en su balance; las condiciones de salida van por escrito desde el día uno.</p>
+          <p style="margin-top:var(--s-12)"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo y la proyección a 10 años →</a></p>
+          <div class="math" id="r-math" hidden>
+            <div class="big3">
+              <div class="cell"><div class="n2" id="r-year">$0</div><small>Al año</small></div>
+              <div class="cell"><div class="n2" id="r-ten">$0</div><small>10 años</small></div>
+            </div>
+            <div class="compbar"><span class="seg dem" id="bar-dem"></span><span class="seg ene" id="bar-ene"></span></div>
+            <p class="compbar-lbl" id="bar-comp-lbl"></p>
+            <div id="r-math-detail"></div>
+          </div>
+          <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
           <p style="margin-top:var(--s-12)"><a href="#" id="email-toggle" style="color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med)">Prefiero que me lo envíen por correo →</a></p>
           <form class="capture" id="capture" data-validate hidden>
             <p class="muted" style="margin-bottom:var(--s-8)"><strong style="color:var(--text)">¿A dónde le enviamos su desglose a 10 años?</strong></p>
@@ -251,6 +359,17 @@
       <span><strong>Datos:</strong> CFE · CENACE · DOF</span><span><strong>Cumplimiento:</strong> NOM-001-SEDE · CRE</span><span>Tarifas vigentes a jun 2026</span>
     </div>
     <p class="muted" style="margin-top:var(--s-16);font-size:13px">Rangos modelados con tarifas CFE reales (almacén Newman · CFE/CENACE, jun 2026); su número exacto se valida con un estudio de carga. Publicaremos casos verificados conforme cerremos proyectos.</p>
+    <h3 class="h-md" style="font-size:20px;margin-top:var(--s-36)">Newman frente al resto</h3>
+    <table class="vs">
+      <thead><tr><th></th><th>Otros</th><th>Newman</th></tr></thead>
+      <tbody>
+        <tr><td>Ver su número</td><td>Tras registro o formulario</td><td class="nm">Al instante, sin registro</td></tr>
+        <tr><td>Consumo mínimo</td><td>Hasta 60,000 kWh para cotizar</td><td class="nm">Ninguno</td></tr>
+        <tr><td>Le muestran la cuenta</td><td>No — solo un % de venta</td><td class="nm">Sí, tarifa por tarifa</td></tr>
+        <tr><td>Tarifa de su división</td><td>Promedio nacional o genérico</td><td class="nm">Real, por su código postal</td></tr>
+        <tr><td>WhatsApp directo</td><td>No</td><td class="nm">Sí</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
@@ -322,7 +441,7 @@
         <a href="#como">Cómo funciona</a><a href="#casos">Casos</a><a href="#personas">Para quien decide</a><a href="#transparencia">Transparencia</a>
       </div>
       <div>
-        <a href="#aviso">Aviso de Privacidad</a><a href="#">Términos y condiciones</a><a href="https://wa.me/525500000000">WhatsApp</a>
+        <a href="aviso-privacidad.html">Aviso de Privacidad</a><a href="https://wa.me/525500000000">WhatsApp</a>
       </div>
     </div>
     <div id="aviso" style="border-top:1px solid rgba(255,255,255,.12);padding-top:var(--s-24);margin-bottom:var(--s-24)">

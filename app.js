@@ -53,16 +53,17 @@
       const demCost=demandaKw*(T.capacidad+T.distribucion);
       const k=Math.max(spend*0.25,(spend-(T.suministradora||0)-demCost)/variable);
       const ai=k>0?variable+demCost/k:0;
-      if(ai>=0.7 && ai<=5 && k>0){ kwh=k; demandPerKwh=demCost/kwh; allIn=ai; demExact=true; }
+      // gate del RANGO de tarifa Y de la plausibilidad física (demanda vs gasto): un dedazo no debe acuñar un "exacto"
+      if(ai>=0.7 && ai<=5 && k>0 && demCost>=spend*0.08 && demCost<=spend*0.95){ kwh=k; demandPerKwh=demCost/kwh; allIn=ai; demExact=true; }
     }
     const demandMonthly=demandPerKwh*kwh;
     let demandSave=BESS_RECOVER*demandMonthly;
     let energySave=SOLAR_COVER*Math.max(0,variable-PPA)*kwh;
-    let monthly=demandSave+energySave, p=Math.min(0.32, monthly/spend);   // tope honesto, SIN piso
+    let monthly=demandSave+energySave, raw=monthly/spend, p=Math.min(0.32, raw);   // tope honesto, SIN piso
     monthly=spend*p;
     const _sc=(demandSave+energySave)>0?monthly/(demandSave+energySave):1; demandSave*=_sc; energySave*=_sc; // reconcilia a lo mostrado
     let cum=0,s=spend; for(let y=0;y<10;y++){ const yp=Math.min(0.40,p+y*0.006); cum+=s*yp*12; s*=(1+CFE_ESC); }
-    return {T,energy,variable,demandPerKwh,allIn,kwh,demandShare:demandPerKwh/allIn,demandMonthly,demandSave,energySave,giro:g,monthly,pct:p*100,annual:monthly*12,tenYr:cum,demExact,demHigh:demExact&&allIn>3.6,refined};
+    return {T,energy,variable,demandPerKwh,allIn,kwh,lf,demandShare:demandPerKwh/allIn,demandMonthly,demandSave,energySave,giro:g,monthly,pct:p*100,capped:raw>0.32,annual:monthly*12,tenYr:cum,demExact,demHigh:demExact&&allIn>3.6,refined};
   }
 
   const round1k=n=>Math.round(n/1000)*1000;
@@ -91,38 +92,47 @@
       errEl.hidden=false; return;
     }
     errEl.hidden=true; $('spend').closest('.field').classList.remove('error');
-    animateNum($('r-month'), round1k(r.monthly));
-    animateNum($('r-pct'), r.pct, true);
-    animateNum($('r-year'), round1k(r.annual));
+    // ahorro reconciliado: total mostrado = suma de componentes redondeados; % derivado del total
+    const dS=round1k(r.demandSave), eS=round1k(r.energySave), mTot=dS+eS;
+    const pctShown=spend>0?Math.round(mTot/spend*100):0;
+    animateNum($('r-month'), mTot);
+    $('r-sub').textContent=`${pctShown}% de su recibo · ahorro estimado al mes`;
+    animateNum($('r-year'), round1k(mTot*12));
     animateNum($('r-ten'), round1k(r.tenYr));
     const sc=$('r-scope');
-    sc.textContent = R.found ? `CP ${cp} · división ${o.div} · tarifa ${o.t} · CFE ${PERIOD}` : 'Estimado genérico — ingrese su código postal para usar las tarifas de su división ↓';
+    sc.textContent = R.found ? `CP ${cp} · división ${o.div}${refined?` · tarifa ${o.t}`:' · tarifa estimada por consumo'} · CFE ${PERIOD}`
+                             : 'Promedio nacional (base Bajío) — ingrese su código postal para la tarifa exacta de su división ↓';
     sc.className = 'r-scope '+(R.found?'refined':'generic');
+    const tr=$('r-trust');
+    if(tr){ if(R.found){ tr.innerHTML=`Calculado con la tarifa real de su división CFE (CP ${cp}), no un promedio nacional. <strong>Nadie más en el mercado lo hace así.</strong>`; tr.hidden=false; } else tr.hidden=true; }
     // comparativa hoy vs Newman
-    const newmanRate=r.allIn*(1-r.pct/100);
+    const newmanRate=r.allIn*(1-pctShown/100);
     $('bar-cfe-val').textContent=r.allIn.toFixed(2)+' $/kWh';
     $('bar-nm').style.width=Math.max(8,newmanRate/r.allIn*100)+'%';
     $('bar-nm-val').textContent=newmanRate.toFixed(2)+' $/kWh';
-    // componentes
+    // composición de su recibo HOY (no del ahorro)
     const ds=Math.round(r.demandShare*100);
     $('bar-dem').style.width=ds+'%'; $('bar-ene').style.width=(100-ds)+'%';
-    $('bar-comp-lbl').innerHTML=`<strong>${ds}%</strong> cargo por demanda · ${100-ds}% energía y cargos`;
-    // derivación reconciliable
+    $('bar-comp-lbl').innerHTML=`Su recibo hoy: <strong>${ds}%</strong> cargo por demanda · ${100-ds}% energía y cargos`;
+    // derivación reconciliable + supuestos a la vista
     const e=r.T.energia;
     const eRow=(typeof e==='object')?`base ${e.base.toFixed(2)} · interm. ${e.intermedio.toFixed(2)} · punta ${e.punta.toFixed(2)}`:e.toFixed(2);
-    $('r-math').innerHTML=
+    $('r-math-detail').innerHTML=
       `<table class="mtab"><tbody>`+
       `<tr><td>Energía CFE</td><td>${eRow} $/kWh</td></tr>`+
-      `<tr><td>Demanda (cap.+distrib.)</td><td>${r.T.capacidad}+${r.T.distribucion}${r.demExact?' $/kW · su demanda contratada':''}</td></tr>`+
+      `<tr><td>Demanda (cap.+distrib.)</td><td>${r.T.capacidad}+${r.T.distribucion}${r.demExact?' $/kW · su demanda contratada':` $/kW ÷ (720 h × factor de carga ${r.lf.toFixed(2)})`}</td></tr>`+
       `<tr><td>Transmisión+CENACE+conexos</td><td>${r.T.transmision}+${r.T.cenace}+${r.T.conexos} $/kWh</td></tr>`+
       `<tr><td><strong>All-in</strong></td><td><strong>≈ ${r.allIn.toFixed(2)} $/kWh</strong> · ${Math.round(r.kwh).toLocaleString('es-MX')} kWh/mes (inferido)</td></tr>`+
       `</tbody></table>`+
-      `<p style="margin-top:8px">Cómo sale: BESS recupera <strong>~45% de su cargo de demanda</strong> (recorte de pico típico) (${fmt(round1k(r.demandSave))}/mes)`+
-      (r.energySave>0?` + solar (PPA ${PPA} $/kWh) ahorra ${fmt(round1k(r.energySave))} en energía`:` (a ${PPA} $/kWh el solar no abarata su energía — el ahorro es por demanda)`)+
-      ` = <strong>${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
-    const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(round1k(r.monthly))} al mes, ${Math.round(r.pct)} por ciento de su recibo.`;
-    const wa=$('wa-result'); if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, CP ${cp||'(s/n)'}, tarifa ${o.t}, división ${o.div}. Ahorro estimado: ${fmt(round1k(r.monthly))}/mes (${Math.round(r.pct)}%). Quiero mi desglose a 10 años.`);
-    if(r.demHigh) $('r-math').innerHTML+='<p style="color:#8a5a06;margin-top:6px">Su demanda contratada implica un costo inusual por kWh — vale la pena revisarla; lo confirmamos en el estudio de carga.</p>';
+      `<p style="margin-top:8px">Cómo sale, con los supuestos a la vista:</p><ul class="mnote">`+
+      `<li>BESS recorta ${r.capped?'parte de':'~45% de'} su cargo de demanda → <strong>${fmt(dS)}/mes</strong>${r.capped?' (limitado al tope honesto de 32%)':''}.</li>`+
+      (eS>0?`<li>Solar (PPA ${PPA} $/kWh) cubre ~45% de su energía → <strong>${fmt(eS)}/mes</strong>.</li>`
+           :`<li>A ${PPA} $/kWh el solar no abarata su energía aquí — el ahorro es por demanda.</li>`)+
+      `<li>Proyección a 10 años: supone CFE +5.8%/año y ahorro creciente hasta 40%.</li>`+
+      `</ul><p><strong>Total: ${fmt(mTot)}/mes (${pctShown}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
+    const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(mTot)} al mes, ${pctShown} por ciento de su recibo.`;
+    const wa=$('wa-result'); if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, CP ${cp||'(s/n)'}, tarifa ${o.t}, división ${o.div}. Ahorro estimado: ${fmt(mTot)}/mes (${pctShown}%). Quiero mi desglose a 10 años.`);
+    if(r.demHigh) $('r-math-detail').innerHTML+='<p class="mwarn">Su demanda contratada implica un costo inusual por kWh — vale la pena revisarla; lo confirmamos en el estudio de carga.</p>';
     $('calc-result').hidden=false;
     $('calc-result').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
     if(window.gtag) gtag('event','result_shown',{spend,tariff:o.t,division:o.div,pct:Math.round(r.pct)});
@@ -141,7 +151,13 @@
     fillSelect('tariff', Object.keys(TARIFFS).map(k=>[k,TARIFF_LABEL[k]]), 'GDMTH');
     fillSelect('giro', Object.keys(GIRO).map(k=>[k,GIRO[k].l]), 'manufactura');
     fillSelect('turno', Object.keys(TURNOS).map(k=>[k,TURNO_LABEL[k]]), '');
-    const cpEl=document.getElementById('cp'); cpEl?.addEventListener('input',()=>{cpEl.value=cpEl.value.replace(/\D/g,'').slice(0,5);});
+    const cpEl=document.getElementById('cp'); cpEl?.addEventListener('input',()=>{
+      cpEl.value=cpEl.value.replace(/\D/g,'').slice(0,5);
+      const echo=document.getElementById('cp-echo'); if(!echo)return;
+      const d=CP2DIV[cpEl.value.slice(0,2)];
+      if(cpEl.value.length>=2 && d){ echo.innerHTML=`→ División CFE: <strong>${d}</strong>`; echo.className='cp-echo ok'; }
+      else { echo.textContent='Lo usamos para las tarifas CFE reales de su división — sin pedir nada más.'; echo.className='cp-echo'; }
+    });
     const spendEl=document.getElementById('spend');
     spendEl?.addEventListener('input',()=>{const d=spendEl.value.replace(/[^\d]/g,'');spendEl.value=d?Number(d).toLocaleString('es-MX'):'';});
     document.getElementById('calc-run')?.addEventListener('click', runCalc);
@@ -149,7 +165,7 @@
     const af=document.getElementById('afinar-toggle');
     af?.addEventListener('click',()=>{const p=document.getElementById('afinar');const open=p.hidden;p.hidden=!open;refined=open;af.setAttribute('aria-expanded',String(open));af.textContent=open?'− Menos detalle':'+ Afinar mi estimado (tarifa, giro, turnos, demanda)';});
     // collapse-math toggle
-    document.getElementById('math-toggle')?.addEventListener('click',e=>{e.preventDefault();const m=document.getElementById('r-math');const open=m.hidden;m.hidden=!open;e.target.textContent=open?'Ocultar el cálculo':'Ver el cálculo, tarifa por tarifa →';});
+    document.getElementById('math-toggle')?.addEventListener('click',e=>{e.preventDefault();const m=document.getElementById('r-math');const open=m.hidden;m.hidden=!open;e.target.textContent=open?'Ocultar el cálculo':'Ver el cálculo y la proyección a 10 años →';});
     // email capture toggle
     document.getElementById('email-toggle')?.addEventListener('click',e=>{e.preventDefault();const c=document.getElementById('capture');c.hidden=false;e.target.style.display='none';c.querySelector('input')?.focus();});
     // form submit -> honest mailto (no false success)
@@ -159,11 +175,15 @@
       const name=($('c-name').value||'').trim(), emp=($('c-emp').value||'').trim(), con=($('c-contact').value||'').trim();
       let bad=false;
       [['c-name',!!name],['c-emp',!!emp],['c-contact',con&&isEmailOrPhone(con)]].forEach(([id,ok])=>{document.getElementById(id).closest('.field').classList.toggle('error',!ok);if(!ok)bad=true;});
-      if(bad){ $('capture-ok').textContent='Revise los campos: nombre, empresa y un WhatsApp o correo válido.'; return; }
-      if(window.gtag) gtag('event','lead_submit');
-      const body=encodeURIComponent(`Nombre: ${name}\nEmpresa: ${emp}\nContacto: ${con}\nGasto CFE: ${$('spend').value}\nTarifa/División: ${$('tariff').value} / ${$('division').value}`);
-      window.location.href=`mailto:hola@newman.re?subject=${encodeURIComponent('Solicitud de desglose de ahorro')}&body=${body}`;
-      $('capture-ok').textContent='Se abrió su correo — presione Enviar para mandárnoslo. Si no se abrió, escríbanos por WhatsApp.';
+      const ok=$('capture-ok'); const say=(t,err)=>{ok.textContent=t;ok.className='cap-msg'+(err?' err':'');};
+      if(bad){ say('Revise los campos: nombre, empresa y un WhatsApp o correo válido.',true); return; }
+      try{
+        const cp=($('cp').value||'').replace(/\D/g,''), div=resolveDiv(cp).div;
+        const body=encodeURIComponent(`Nombre: ${name}\nEmpresa: ${emp}\nContacto: ${con}\nGasto CFE: ${$('spend').value}\nCP: ${cp||'(s/n)'}\nTarifa/División: ${$('tariff').value} / ${div}`);
+        window.location.href=`mailto:hola@newman.re?subject=${encodeURIComponent('Solicitud de desglose de ahorro')}&body=${body}`;
+        if(window.gtag) gtag('event','lead_submit');
+        say('Se abrió su correo — presione Enviar para mandárnoslo. Si no se abrió, escríbanos por WhatsApp.',false);
+      }catch(err){ say('No pudimos abrir su correo automáticamente — escríbanos por WhatsApp y lo hacemos por usted.',true); }
     });
   });
   window.NewmanCalc = { compute, rates, TARIFFS, GIRO };
