@@ -184,6 +184,10 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
   .spark-legend .dot.cfe{background:#cabfdd}.spark-legend .dot.nm{background:var(--accent)}
   .spark-cap{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.45}
   .mt12{margin-top:var(--s-12)}
+  .mt8{margin-top:8px}.mt24{margin-top:var(--s-24)}.mt36{margin-top:var(--s-36)}.mb8{margin-bottom:var(--s-8)}
+  .ink{color:var(--text)}
+  .note-sm{margin-top:var(--s-16);font-size:13px;color:var(--muted)}
+  .cta-row{display:flex;gap:var(--s-16);justify-content:center;flex-wrap:wrap;margin-top:var(--s-24)}
   .link-sm{color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med)}
   .mwarn{color:var(--warn);margin-top:6px}
   .cap-msg{font-size:12px;color:var(--muted);margin-top:8px}.cap-msg.err{color:var(--danger)}
@@ -261,7 +265,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
       <div>
         <p class="kicker">Industria y comercio · México</p>
         <h1>Su ahorro real en pesos —<br><b>sin registro, sin mínimos de consumo.</b></h1>
-        <p class="lead"><strong style="color:var(--text)">Empresas como la suya ahorran 18–30%</strong>, con la cuenta a la vista. Sin registro, sin inversión inicial — energía renovable para industria y comercio en México.</p>
+        <p class="lead"><strong class="ink">Empresas como la suya ahorran 18–30%</strong>, con la cuenta a la vista. Sin registro, sin inversión inicial — energía renovable para industria y comercio en México.</p>
         <div class="badges">
           <span class="b">Tarifas CFE reales · jun 2026</span>
           <span class="b">Sin inversión inicial (PPA)</span>
@@ -325,7 +329,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
           <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
           <p class="mt12"><a href="#" id="email-toggle" class="link-sm">Prefiero que me lo envíen por correo →</a></p>
           <form class="capture" id="capture" data-validate hidden>
-            <p class="muted" style="margin-bottom:var(--s-8)"><strong style="color:var(--text)">¿A dónde le enviamos su desglose a 10 años?</strong></p>
+            <p class="muted mb8"><strong class="ink">¿A dónde le enviamos su desglose a 10 años?</strong></p>
             <div class="row">
               <div class="field"><label for="c-name">Nombre</label><input id="c-name" required></div>
               <div class="field"><label for="c-emp">Empresa</label><input id="c-emp" required></div>
@@ -363,15 +367,15 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
     <div class="section-rule"></div>
     <p class="lead" style="max-width:60ch">No prometemos "hasta 98%". Modelamos su caso con su tarifa real y le mostramos cómo. Esa es la diferencia.</p>
     <div class="tband">
-      <div class="case" data-reveal><div class="big">18–30%</div><p class="muted" style="margin-top:8px">Ahorro típico modelado sobre tarifa GDMTH con tarifas CFE reales — el rango honesto, no "hasta 98%".</p></div>
-      <div class="case" data-reveal><div class="big">3–5 años</div><p class="muted" style="margin-top:8px">Payback característico de solar + almacenamiento para industria en México.</p></div>
-      <div class="case" data-reveal><div class="big">$0</div><p class="muted" style="margin-top:8px">Inversión inicial del cliente — modelo PPA / BESS como servicio. Ahorro desde el primer mes.</p></div>
+      <div class="case" data-reveal><div class="big">18–30%</div><p class="muted mt8">Ahorro típico modelado sobre tarifa GDMTH con tarifas CFE reales — el rango honesto, no "hasta 98%".</p></div>
+      <div class="case" data-reveal><div class="big">3–5 años</div><p class="muted mt8">Payback característico de solar + almacenamiento para industria en México.</p></div>
+      <div class="case" data-reveal><div class="big">$0</div><p class="muted mt8">Inversión inicial del cliente — modelo PPA / BESS como servicio. Ahorro desde el primer mes.</p></div>
     </div>
     <div class="logos" aria-label="Referencias regulatorias y de calidad">
       <span><strong>Datos:</strong> CFE · CENACE · DOF</span><span><strong>Cumplimiento:</strong> NOM-001-SEDE · CRE</span><span>Tarifas vigentes a jun 2026</span>
     </div>
-    <p class="muted" style="margin-top:var(--s-16);font-size:13px">Rangos modelados con tarifas CFE reales (almacén Newman · CFE/CENACE, jun 2026); su número exacto se valida con un estudio de carga. Publicaremos casos verificados conforme cerremos proyectos.</p>
-    <h3 class="h-md" style="font-size:20px;margin-top:var(--s-36)">Newman frente al resto</h3>
+    <p class="note-sm">Rangos modelados con tarifas CFE reales (almacén Newman · CFE/CENACE, jun 2026); su número exacto se valida con un estudio de carga. Publicaremos casos verificados conforme cerremos proyectos.</p>
+    <h3 class="h-md h-sm mt36">Newman frente al resto</h3>
     <table class="vs">
       <thead><tr><th></th><th>Otros</th><th>Newman</th></tr></thead>
       <tbody>
@@ -416,7 +420,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
     <h2 class="h-lg">Le mostramos la cuenta. Nadie más lo hace.</h2>
     <div class="section-rule"></div>
     <p class="lead">El sector vende "hasta 40–60%" sin enseñar el cálculo. Newman parte de su tarifa CFE real (vigente a junio 2026), su perfil de consumo, y modela el ahorro <strong>conservador (18–30%)</strong> — para que cobre de más, nunca de menos. El recibo real no miente.</p>
-    <div class="acc" style="margin-top:var(--s-24)">
+    <div class="acc mt24">
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿El ahorro es real o un número de venta?<span class="pm">+</span></button><div class="acc-body"><p>Modelamos con las tarifas CFE vigentes de nuestra base de datos (CFE/CENACE) y supuestos conservadores. Por eso decimos 18–30% y no "hasta 98%". Antes de firmar, validamos con un estudio de carga real.</p></div></div>
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Cuánto tengo que invertir?<span class="pm">+</span></button><div class="acc-body"><p>Cero. El modelo PPA / BESS como servicio significa que usted no pone capital: paga por la energía/servicio y ahorra desde el primer mes.</p></div></div>
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Qué pasa al final del contrato?<span class="pm">+</span></button><div class="acc-body"><p>Según el esquema: el sistema puede pasar a su propiedad, renovar, o retirarse. Sin letra chica — se lo ponemos por escrito desde el inicio.</p></div></div>
@@ -432,7 +436,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
     <h2 class="h-lg">Vea su número en 30 segundos.</h2>
     <div class="section-rule"></div>
     <p class="lead" style="margin-inline:auto">No tiene que registrarse para saber cuánto ahorra. Empiece por su gasto mensual ; o use el botón de WhatsApp.</p>
-    <div style="display:flex;gap:var(--s-16);justify-content:center;flex-wrap:wrap;margin-top:var(--s-24)">
+    <div class="cta-row">
       <a href="#calc" class="btn">Ver mi ahorro</a>
 
     </div>
@@ -448,7 +452,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
       <div style="max-width:300px">
         <div class="caps" style="font-size:14px;letter-spacing:.24em;margin-bottom:var(--s-12)">Newman Energy</div>
         <p class="muted">Inteligencia de tarifas + energía renovable sin inversión inicial para industria y comercio en México.</p>
-        <p class="muted" style="margin-top:var(--s-12)">Tel. +52 55 0000 0000 · hola@newman.re<br>Ciudad de México, México</p>
+        <p class="muted mt12">Tel. +52 55 0000 0000 · hola@newman.re<br>Ciudad de México, México</p>
       </div>
       <div>
         <a href="#como">Cómo funciona</a><a href="#casos">Casos</a><a href="#personas">Para quien decide</a><a href="#transparencia">Transparencia</a>
