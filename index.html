@@ -182,6 +182,9 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
   .spark-legend{font-size:11px;color:var(--muted);display:flex;gap:12px;align-items:center;margin-bottom:4px;font-family:var(--display)}
   .spark-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
   .spark-legend .dot.cfe{background:#cabfdd}.spark-legend .dot.nm{background:var(--accent)}
+  .spark-cap{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.45}
+  .mt12{margin-top:var(--s-12)}
+  .link-sm{color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med)}
   .mwarn{color:var(--warn);margin-top:6px}
   .cap-msg{font-size:12px;color:var(--muted);margin-top:8px}.cap-msg.err{color:var(--danger)}
   .vs{width:100%;border-collapse:collapse;font-size:13px;margin-top:var(--s-24)}
@@ -299,7 +302,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
           <p id="r-scope" class="r-scope generic"></p>
           <div class="cmp">
             <div class="cmp-row"><span class="cmp-lbl">Hoy (CFE)</span><span class="cmp-bar"><span class="cmp-fill cfe"></span></span><span class="cmp-val" id="bar-cfe-val"></span></div>
-            <div class="cmp-row"><span class="cmp-lbl">Con Newman</span><span class="cmp-bar"><span class="cmp-fill nm" id="bar-nm"></span></span><span class="cmp-val" id="bar-nm-val"></span></div>
+            <div class="cmp-row"><span class="cmp-lbl">Newman (efectiva)</span><span class="cmp-bar"><span class="cmp-fill nm" id="bar-nm"></span></span><span class="cmp-val" id="bar-nm-val"></span></div>
           </div>
           <div class="r-hero"><div class="n" id="r-month">$0</div><small id="r-sub">Ahorro estimado al mes</small></div>
           <p id="r-trust" class="r-trust" hidden></p>
@@ -309,7 +312,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
           </a>
           <p class="wa-who">Le responde una persona del equipo Newman, no un bot — normalmente en menos de 2 horas hábiles. Sin capex ni deuda en su balance; las condiciones de salida van por escrito desde el día uno.</p>
           <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'result'})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.19a1 1 0 0 1-1.41-1.41l8.49-8.49"/></svg>¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
-          <p style="margin-top:var(--s-12)"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo y la proyección a 10 años →</a></p>
+          <p class="mt12"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo y la proyección a 10 años →</a></p>
           <div class="math" id="r-math" hidden>
             <div class="big3">
               <div class="cell"><div class="n2" id="r-year">$0</div><small>Al año</small></div>
@@ -320,7 +323,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
             <div id="r-math-detail"></div>
           </div>
           <p id="r-sr" class="sr-only" role="status" aria-live="polite"></p>
-          <p style="margin-top:var(--s-12)"><a href="#" id="email-toggle" style="color:var(--accent);font-family:var(--display);font-size:13px;font-weight:var(--w-med)">Prefiero que me lo envíen por correo →</a></p>
+          <p class="mt12"><a href="#" id="email-toggle" class="link-sm">Prefiero que me lo envíen por correo →</a></p>
           <form class="capture" id="capture" data-validate hidden>
             <p class="muted" style="margin-bottom:var(--s-8)"><strong style="color:var(--text)">¿A dónde le enviamos su desglose a 10 años?</strong></p>
             <div class="row">

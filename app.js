@@ -127,8 +127,12 @@
     for(let y=0;y<YRS;y++){ const c=base*Math.pow(1+CFE_ESC,y), yp=Math.min(0.40,pp+y*0.006); cfeArr.push(c); nmArr.push(c*(1-yp)); }
     const maxV=cfeArr[YRS-1], sx=i=>SP+i*(SW-2*SP)/(YRS-1), sy=v=>SH-SP-(v/maxV)*(SH-2*SP);
     const spath=a=>a.map((v,i)=>`${i?'L':'M'}${sx(i).toFixed(1)} ${sy(v).toFixed(1)}`).join(' ');
+    const gap10=fmt(round1k((cfeArr[YRS-1]-nmArr[YRS-1])/12));
     const spark=`<div class="spark-wrap"><div class="spark-legend"><span class="dot cfe"></span>CFE <span class="dot nm"></span>Newman · su costo proyectado a 10 años</div>`+
-      `<svg viewBox="0 0 ${SW} ${SH}" class="spark" role="img" aria-label="Costo CFE creciente vs Newman a 10 años"><path d="${spath(cfeArr)}" fill="none" stroke="#cabfdd" stroke-width="2"/><path d="${spath(nmArr)}" fill="none" stroke="var(--accent)" stroke-width="2"/></svg></div>`;
+      `<svg viewBox="0 0 ${SW} ${SH}" class="spark" role="img" aria-label="Costo CFE creciente vs Newman a 10 años; brecha al año 10 ${gap10} por mes">`+
+      `<path d="${spath(cfeArr)}" fill="none" stroke="#cabfdd" stroke-width="2"/><path d="${spath(nmArr)}" fill="none" stroke="var(--accent)" stroke-width="2"/>`+
+      `<circle cx="${sx(YRS-1).toFixed(1)}" cy="${sy(cfeArr[YRS-1]).toFixed(1)}" r="2.6" fill="#cabfdd"/><circle cx="${sx(YRS-1).toFixed(1)}" cy="${sy(nmArr[YRS-1]).toFixed(1)}" r="2.6" fill="var(--accent)"/></svg>`+
+      `<p class="spark-cap">Al año 10: CFE ≈ ${fmt(round1k(cfeArr[YRS-1]/12))}/mes vs Newman ≈ ${fmt(round1k(nmArr[YRS-1]/12))}/mes — brecha de <strong>${gap10}/mes</strong>.</p></div>`;
     $('r-math-detail').innerHTML=
       `<table class="mtab"><tbody>`+
       `<tr><td>Energía CFE</td><td>${eRow} $/kWh</td></tr>`+
