@@ -129,7 +129,8 @@
       (eS>0?`<li>Solar (PPA ${PPA} $/kWh) cubre ~45% de su energía → <strong>${fmt(eS)}/mes</strong>.</li>`
            :`<li>A ${PPA} $/kWh el solar no abarata su energía aquí — el ahorro es por demanda.</li>`)+
       `<li>Proyección a 10 años: supone CFE +5.8%/año y ahorro creciente hasta 40%.</li>`+
-      `</ul><p><strong>Total: ${fmt(mTot)}/mes (${pctShown}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
+      `</ul><p class="mnote-src">Fuentes: tarifas CFE del almacén Newman (CFE · CENACE · DOF, jun 2026); PPA solar ${PPA} $/kWh = rango de mercado para contratos C&I sin inversión inicial en México.</p>`+
+      `<p><strong>Total: ${fmt(mTot)}/mes (${pctShown}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
     const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(mTot)} al mes, ${pctShown} por ciento de su recibo.`;
     const wa=$('wa-result'); if(wa) wa.href=`https://wa.me/525500000000?text=`+encodeURIComponent(`Hola, gasto CFE ${fmt(spend)}/mes, CP ${cp||'(s/n)'}, tarifa ${o.t}, división ${o.div}. Ahorro estimado: ${fmt(mTot)}/mes (${pctShown}%). Quiero mi desglose a 10 años.`);
     if(r.demHigh) $('r-math-detail').innerHTML+='<p class="mwarn">Su demanda contratada implica un costo inusual por kWh — vale la pena revisarla; lo confirmamos en el estudio de carga.</p>';
