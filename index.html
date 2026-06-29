@@ -174,6 +174,12 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
   .wa-who{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.45}
   .mnote{margin:6px 0 0;padding-left:18px}.mnote li{margin-bottom:4px}
   .mnote-src{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
+  .fineprint{font-size:12px;color:var(--muted);margin-top:var(--s-8);line-height:1.45}
+  .spark-wrap{margin-top:10px}
+  .spark{width:100%;height:auto;display:block}
+  .spark-legend{font-size:11px;color:var(--muted);display:flex;gap:12px;align-items:center;margin-bottom:4px;font-family:var(--display)}
+  .spark-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+  .spark-legend .dot.cfe{background:#cabfdd}.spark-legend .dot.nm{background:var(--accent)}
   .mwarn{color:var(--warn);margin-top:6px}
   .cap-msg{font-size:12px;color:var(--muted);margin-top:8px}.cap-msg.err{color:var(--danger)}
   .vs{width:100%;border-collapse:collapse;font-size:13px;margin-top:var(--s-24)}
@@ -275,7 +281,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
         </div>
         <button type="button" class="afinar-btn" id="afinar-toggle" aria-expanded="false">+ Afinar mi estimado (tarifa, giro, turnos, demanda)</button>
         <div id="afinar" hidden>
-          <div class="field"><label for="tariff">Tarifa CFE (la detectamos por su consumo; ajústela si la conoce)</label><select id="tariff"></select></div>
+          <div class="field"><label for="tariff">Tarifa CFE (la estimamos por su consumo; ajústela si la conoce)</label><select id="tariff"></select></div>
           <div class="field"><label for="giro">Giro / industria</label><select id="giro"></select></div>
           <div class="cgrid">
             <div class="field"><label for="turno">Horario / turnos</label><select id="turno"></select><small style="font-size:11px;color:var(--muted)">Si lo elige, usamos su horario en vez del típico de su giro.</small></div>
@@ -286,7 +292,6 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
         <p class="calc-err" id="calc-err" role="alert" hidden></p>
         <div class="nolock">Sin costo, sin compromiso, sin registro para ver su número.</div>
         <p class="contrast-strip">Otros le piden registrarse, o un mínimo de 60,000 kWh, para ver un número. Aquí lo ve ya — y le mostramos la cuenta.</p>
-        <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'calc'})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.19a1 1 0 0 1-1.41-1.41l8.49-8.49"/></svg>¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
 
         <div class="result" id="calc-result" hidden>
           <p id="r-scope" class="r-scope generic"></p>
@@ -301,6 +306,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
             Enviar mi número por WhatsApp
           </a>
           <p class="wa-who">Le responde una persona del equipo Newman, no un bot — normalmente en menos de 2 horas hábiles. Sin capex ni deuda en su balance; las condiciones de salida van por escrito desde el día uno.</p>
+          <a class="upload-wa" href="https://wa.me/525500000000?text=Hola%2C%20le%20env%C3%ADo%20mi%20recibo%20de%20CFE%20para%20el%20n%C3%BAmero%20exacto%20de%20ahorro." onclick="window.gtag&&gtag('event','bill_upload_intent',{src:'result'})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.19a1 1 0 0 1-1.41-1.41l8.49-8.49"/></svg>¿Quiere el número <strong>exacto</strong>? Envíe su recibo por WhatsApp y lo leemos por usted →</a>
           <p style="margin-top:var(--s-12)"><a href="#" id="math-toggle" class="mt-link">Ver el cálculo y la proyección a 10 años →</a></p>
           <div class="math" id="r-math" hidden>
             <div class="big3">
@@ -371,6 +377,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
         <tr><td>WhatsApp directo</td><td>No</td><td class="nm">Sí</td></tr>
       </tbody>
     </table>
+    <p class="fineprint">«Otros» se refiere a prácticas observadas en portales públicos del sector C&I en México (registro previo o mínimos de consumo para cotizar, p. ej. 60,000 kWh), jun 2026. No nombramos competidores.</p>
   </div>
 </section>
 
@@ -408,7 +415,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿El ahorro es real o un número de venta?<span class="pm">+</span></button><div class="acc-body"><p>Modelamos con las tarifas CFE vigentes de nuestra base de datos (CFE/CENACE) y supuestos conservadores. Por eso decimos 18–30% y no "hasta 98%". Antes de firmar, validamos con un estudio de carga real.</p></div></div>
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Cuánto tengo que invertir?<span class="pm">+</span></button><div class="acc-body"><p>Cero. El modelo PPA / BESS como servicio significa que usted no pone capital: paga por la energía/servicio y ahorra desde el primer mes.</p></div></div>
       <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Qué pasa al final del contrato?<span class="pm">+</span></button><div class="acc-body"><p>Según el esquema: el sistema puede pasar a su propiedad, renovar, o retirarse. Sin letra chica — se lo ponemos por escrito desde el inicio.</p></div></div>
-      <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Qué hacen con mis datos?<span class="pm">+</span></button><div class="acc-body"><p>Solo los usamos para enviarle su análisis. No los compartimos. Consulte nuestro <a href="#aviso" style="color:var(--accent)">Aviso de Privacidad</a> (LFPDPPP).</p></div></div>
+      <div class="acc-item"><button class="acc-head" aria-expanded="false">¿Qué hacen con mis datos?<span class="pm">+</span></button><div class="acc-body"><p>Solo los usamos para enviarle su análisis. No los compartimos. Consulte nuestro <a href="aviso-privacidad.html" style="color:var(--accent)">Aviso de Privacidad</a> (LFPDPPP).</p></div></div>
     </div>
   </div>
 </section>
