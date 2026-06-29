@@ -141,7 +141,7 @@
       (eS>0?`<li>Solar (PPA ${PPA} $/kWh) cubre ~45% de su energía → <strong>${fmt(eS)}/mes</strong>.</li>`
            :`<li>A ${PPA} $/kWh el solar no abarata su energía aquí — el ahorro es por demanda.</li>`)+
       `<li>Proyección a 10 años: supone CFE +5.8%/año y ahorro creciente hasta 40%.</li>`+
-      `</ul>`+spark+
+      `</ul>`+(r.capped?`<p class="mnote-src">Su ahorro modelado supera el 32%; mostramos el tope conservador del 32% y repartimos demanda/energía proporcionalmente a ese tope.</p>`:'')+spark+
       `<p class="mnote-src">Fuentes: tarifas CFE del almacén Newman (CFE · CENACE · DOF, jun 2026); PPA solar ${PPA} $/kWh = rango de mercado para contratos C&I sin inversión inicial en México.</p>`+
       `<p><strong>Total: ${fmt(mTot)}/mes (${pctShown}%)</strong>. Sin pisos inflados; se valida con estudio de carga.</p>`;
     const sr=$('r-sr'); if(sr) sr.textContent=`Ahorro estimado ${fmt(mTot)} al mes, ${pctShown} por ciento de su recibo.`;

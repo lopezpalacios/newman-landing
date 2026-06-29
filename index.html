@@ -175,6 +175,8 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
   .mnote{margin:6px 0 0;padding-left:18px}.mnote li{margin-bottom:4px}
   .mnote-src{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
   .fineprint{font-size:12px;color:var(--muted);margin-top:var(--s-8);line-height:1.45}
+  .hint-box{background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)}
+  .h-sm{font-size:20px}
   .spark-wrap{margin-top:10px}
   .spark{width:100%;height:auto;display:block}
   .spark-legend{font-size:11px;color:var(--muted);display:flex;gap:12px;align-items:center;margin-bottom:4px;font-family:var(--display)}
@@ -268,7 +270,7 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
       <div class="calc" id="calc">
         <h3>Calcule su ahorro</h3>
         <p class="hint">Su gasto mensual de CFE basta para empezar. Afine con su división y giro para más precisión — sin pedir sus datos primero.</p>
-        <p class="hint" style="background:var(--accent-tint);border-radius:var(--r-sm);padding:8px 10px;color:var(--accent)"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$47,000/mes (≈19%)</strong> — su número exacto depende de su tarifa. Calcúlelo ↓</p>
+        <p class="hint hint-box"><strong>Ejemplo:</strong> una planta GDMTH con $250,000/mes ahorra ≈ <strong>$47,000/mes (≈19%)</strong> — su número exacto depende de su tarifa. Calcúlelo ↓</p>
         <div class="field">
           <label for="spend">Gasto mensual CFE (MXN)</label>
           <input id="spend" inputmode="numeric" autocomplete="off" placeholder="ej. 250,000">
@@ -343,9 +345,9 @@ p{color:var(--muted);max-width:64ch;font-size:var(--text-body)}
     <h2 class="h-lg">Tres pasos. Cero letra chica.</h2>
     <div class="section-rule"></div>
     <div class="steps">
-      <div class="step" data-reveal><div class="num">1</div><h3 class="h-md" style="font-size:20px">Ingrese su recibo</h3><p>Un solo dato: su gasto mensual de CFE. ¿Quiere el número exacto? Suba su recibo y lo leemos por usted.</p></div>
-      <div class="step" data-reveal><div class="num">2</div><h3 class="h-md" style="font-size:20px">Vea su ahorro real</h3><p>Comparamos su tarifa CFE vigente contra una solución Newman (solar + almacenamiento) y le mostramos la cuenta, no un eslogan.</p></div>
-      <div class="step" data-reveal><div class="num">3</div><h3 class="h-md" style="font-size:20px">Decida con datos</h3><p>Si tiene sentido, lo acompañamos. Sin inversión inicial, sin riesgo operativo. Si no, se lo decimos.</p></div>
+      <div class="step" data-reveal><div class="num">1</div><h3 class="h-md h-sm">Ingrese su recibo</h3><p>Un solo dato: su gasto mensual de CFE. ¿Quiere el número exacto? Suba su recibo y lo leemos por usted.</p></div>
+      <div class="step" data-reveal><div class="num">2</div><h3 class="h-md h-sm">Vea su ahorro real</h3><p>Comparamos su tarifa CFE vigente contra una solución Newman (solar + almacenamiento) y le mostramos la cuenta, no un eslogan.</p></div>
+      <div class="step" data-reveal><div class="num">3</div><h3 class="h-md h-sm">Decida con datos</h3><p>Si tiene sentido, lo acompañamos. Sin inversión inicial, sin riesgo operativo. Si no, se lo decimos.</p></div>
     </div>
   </div>
 </section>
